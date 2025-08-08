@@ -1,3 +1,12 @@
+import { Button } from "@/components/ui/button";
+import { createDefaultCategories } from "@/lib/categories";
+
 export default function Home() {
-  return <div className=""></div>;
+  return (
+    <div className="">
+      <Button onClick={createDefaultCategories}>
+        Create Default Categories
+      </Button>
+    </div>
+  );
 }
