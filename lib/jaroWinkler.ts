@@ -17,11 +17,7 @@ const jaroDistance = (s1: string, s2: string) => {
   hash_s2.fill(0);
 
   for (let i = 0; i < len1; i++) {
-    for (
-      let j = Math.max(0, i - max_dist);
-      j < Math.min(len2, i + max_dist + 1);
-      j++
-    )
+    for (let j = Math.max(0, i - max_dist); j < Math.min(len2, i + max_dist + 1); j++)
       if (s1[i] == s2[j] && hash_s2[j] == 0) {
         hash_s1[i] = 1;
         hash_s2[j] = 1;
