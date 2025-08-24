@@ -1,14 +1,23 @@
 import { motion, Variants } from 'framer-motion';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  job: z.string().min(1, 'Job title is required'),
+});
 
 export function OnboardingStep1({
   nextStep,
@@ -19,6 +28,19 @@ export function OnboardingStep1({
   prevStep: () => void;
   item: Variants;
 }) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: '',
+      job: '',
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    nextStep();
+  };
+
   return (
     <>
       <CardHeader>
@@ -31,32 +53,49 @@ export function OnboardingStep1({
       </CardHeader>
 
       <CardContent>
-        <form>
-          <div className="flex flex-col gap-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <motion.div variants={item}>
-              <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" type="text" placeholder="John Doe" required autoFocus />
-              </div>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" autoFocus {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </motion.div>
             <motion.div variants={item}>
-              <div className="grid gap-2">
-                <Label htmlFor="job">Job Title</Label>
-                <Input id="job" type="text" placeholder="Software Engineer" required />
+              <FormField
+                control={form.control}
+                name="job"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Job Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Software Engineer" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+            <motion.div variants={item}>
+              <div className="flex justify-between">
+                <Button variant="outline" type="button" onClick={prevStep}>
+                  Back
+                </Button>
+                <Button type="submit">Continue</Button>
               </div>
             </motion.div>
-          </div>
-        </form>
+          </form>
+        </Form>
       </CardContent>
-
-      <motion.div variants={item}>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={prevStep}>
-            Back
-          </Button>
-          <Button onClick={nextStep}>Continue</Button>
-        </CardFooter>
-      </motion.div>
     </>
   );
 }

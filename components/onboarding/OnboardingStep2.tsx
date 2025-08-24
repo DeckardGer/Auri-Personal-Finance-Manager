@@ -1,16 +1,24 @@
 import { motion, Variants } from 'framer-motion';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import Image from 'next/image';
 import openai from '@/public/openai.svg';
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
+const formSchema = z.object({
+  apiKey: z.string().min(1, 'OpenAI API Key is required'),
+});
 
 export function OnboardingStep2({
   nextStep,
@@ -21,6 +29,18 @@ export function OnboardingStep2({
   prevStep: () => void;
   item: Variants;
 }) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      apiKey: '',
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log(values);
+    nextStep();
+  };
+
   return (
     <>
       <CardHeader>
@@ -35,7 +55,47 @@ export function OnboardingStep2({
       </CardHeader>
 
       <CardContent>
-        <form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <motion.div variants={item}>
+              <FormField
+                control={form.control}
+                name="apiKey"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>API Key</FormLabel>
+                    <div className="relative">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <Image
+                          src={openai}
+                          alt="OpenAI"
+                          width={20}
+                          height={20}
+                          className="h-5 w-5 dark:invert"
+                          priority
+                          unoptimized
+                        />
+                      </div>
+                      <FormControl>
+                        <Input placeholder="sk-..." className="pl-10" autoFocus {...field} />
+                      </FormControl>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+            <motion.div variants={item}>
+              <div className="flex justify-between">
+                <Button variant="outline" type="button" onClick={prevStep}>
+                  Back
+                </Button>
+                <Button type="submit">Continue</Button>
+              </div>
+            </motion.div>
+          </form>
+        </Form>
+        {/* <form>
           <div className="flex flex-col gap-6">
             <motion.div variants={item}>
               <div className="grid gap-2">
@@ -64,17 +124,8 @@ export function OnboardingStep2({
               </div>
             </motion.div>
           </div>
-        </form>
+        </form> */}
       </CardContent>
-
-      <motion.div variants={item}>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={prevStep}>
-            Back
-          </Button>
-          <Button onClick={nextStep}>Continue</Button>
-        </CardFooter>
-      </motion.div>
     </>
   );
 }
