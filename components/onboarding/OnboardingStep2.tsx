@@ -1,5 +1,4 @@
 import { motion, Variants } from 'framer-motion';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -15,10 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-const formSchema = z.object({
-  apiKey: z.string().min(1, 'OpenAI API Key is required'),
-});
+import { onboardingStep2Schema, OnboardingStep2Schema } from '@/types/onboarding-schemas';
 
 export function OnboardingStep2({
   nextStep,
@@ -29,14 +25,14 @@ export function OnboardingStep2({
   prevStep: () => void;
   item: Variants;
 }) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<OnboardingStep2Schema>({
+    resolver: zodResolver(onboardingStep2Schema),
     defaultValues: {
       apiKey: '',
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: OnboardingStep2Schema) => {
     console.log(values);
     nextStep();
   };
@@ -85,6 +81,7 @@ export function OnboardingStep2({
                 )}
               />
             </motion.div>
+
             <motion.div variants={item}>
               <div className="flex justify-between">
                 <Button variant="outline" type="button" onClick={prevStep}>
@@ -95,36 +92,6 @@ export function OnboardingStep2({
             </motion.div>
           </form>
         </Form>
-        {/* <form>
-          <div className="flex flex-col gap-6">
-            <motion.div variants={item}>
-              <div className="grid gap-2">
-                <Label htmlFor="apiKey">API Key</Label>
-                <div className="relative">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <Image
-                      src={openai}
-                      alt="OpenAI"
-                      width={20}
-                      height={20}
-                      className="h-5 w-5 dark:invert"
-                      priority
-                      unoptimized
-                    />
-                  </div>
-                  <Input
-                    id="apiKey"
-                    type="text"
-                    placeholder="sk-..."
-                    required
-                    autoFocus
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </form> */}
       </CardContent>
     </>
   );

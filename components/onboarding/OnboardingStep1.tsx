@@ -1,5 +1,4 @@
 import { motion, Variants } from 'framer-motion';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,11 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  job: z.string().min(1, 'Job title is required'),
-});
+import { onboardingStep1Schema, OnboardingStep1Schema } from '@/types/onboarding-schemas';
 
 export function OnboardingStep1({
   nextStep,
@@ -28,15 +23,15 @@ export function OnboardingStep1({
   prevStep: () => void;
   item: Variants;
 }) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<OnboardingStep1Schema>({
+    resolver: zodResolver(onboardingStep1Schema),
     defaultValues: {
       name: '',
       job: '',
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: OnboardingStep1Schema) => {
     console.log(values);
     nextStep();
   };
@@ -85,6 +80,7 @@ export function OnboardingStep1({
                 )}
               />
             </motion.div>
+
             <motion.div variants={item}>
               <div className="flex justify-between">
                 <Button variant="outline" type="button" onClick={prevStep}>
