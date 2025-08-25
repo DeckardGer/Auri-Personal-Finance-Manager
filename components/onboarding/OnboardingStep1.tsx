@@ -13,6 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { onboardingStep1Schema, OnboardingStep1Schema } from '@/types/onboarding-schemas';
+import { useOnboardingStore } from '@/stores/useOnboardingStore';
 
 export function OnboardingStep1({
   nextStep,
@@ -23,16 +24,18 @@ export function OnboardingStep1({
   prevStep: () => void;
   item: Variants;
 }) {
+  const { name, job, setUserDetails } = useOnboardingStore();
+
   const form = useForm<OnboardingStep1Schema>({
     resolver: zodResolver(onboardingStep1Schema),
     defaultValues: {
-      name: '',
-      job: '',
+      name,
+      job,
     },
   });
 
   const onSubmit = (values: OnboardingStep1Schema) => {
-    console.log(values);
+    setUserDetails(values);
     nextStep();
   };
 

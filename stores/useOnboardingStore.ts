@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 import {
   OnboardingStep1Schema,
   OnboardingStep2Schema,
@@ -9,14 +10,14 @@ type OnboardingState = {
   name: string;
   job: string;
   apiKey: string;
-  theme: string;
+  theme: 'system' | 'light' | 'dark';
 
   setUserDetails: (data: OnboardingStep1Schema) => void;
   setApiKey: (data: OnboardingStep2Schema) => void;
   setTheme: (data: OnboardingStep3Schema) => void;
 };
 
-const initialState = {
+const initialState: Pick<OnboardingState, 'name' | 'job' | 'apiKey' | 'theme'> = {
   name: '',
   job: '',
   apiKey: '',

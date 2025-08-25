@@ -17,6 +17,7 @@ import dark from '@/public/dark.png';
 import system from '@/public/system.png';
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { onboardingStep3Schema, OnboardingStep3Schema } from '@/types/onboarding-schemas';
+import { useOnboardingStore } from '@/stores/useOnboardingStore';
 
 export function OnboardingStep3({
   nextStep,
@@ -27,15 +28,17 @@ export function OnboardingStep3({
   prevStep: () => void;
   item: Variants;
 }) {
+  const { theme, setTheme } = useOnboardingStore();
+
   const form = useForm<OnboardingStep3Schema>({
     resolver: zodResolver(onboardingStep3Schema),
     defaultValues: {
-      theme: 'system',
+      theme: theme,
     },
   });
 
   const onSubmit = (values: OnboardingStep3Schema) => {
-    console.log(values);
+    setTheme(values);
     nextStep();
   };
 

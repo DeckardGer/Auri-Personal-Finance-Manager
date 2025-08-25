@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { onboardingStep2Schema, OnboardingStep2Schema } from '@/types/onboarding-schemas';
+import { useOnboardingStore } from '@/stores/useOnboardingStore';
 
 export function OnboardingStep2({
   nextStep,
@@ -25,15 +26,17 @@ export function OnboardingStep2({
   prevStep: () => void;
   item: Variants;
 }) {
+  const { apiKey, setApiKey } = useOnboardingStore();
+
   const form = useForm<OnboardingStep2Schema>({
     resolver: zodResolver(onboardingStep2Schema),
     defaultValues: {
-      apiKey: '',
+      apiKey,
     },
   });
 
   const onSubmit = (values: OnboardingStep2Schema) => {
-    console.log(values);
+    setApiKey(values);
     nextStep();
   };
 
