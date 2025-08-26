@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useState, forwardRef, useEffect, memo } from 'react';
+import React, { useCallback, useState, forwardRef, useEffect, memo, useRef } from 'react';
 import {
   Command,
   CommandEmpty,
@@ -84,6 +84,12 @@ const CountryDropdownComponent = (
 ) => {
   const [open, setOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(undefined);
+  const onChangeRef = useRef<CountryDropdownProps['onChange']>(onChange);
+
+  // Keep the latest onChange in a ref so we don't recreate callbacks on every prop change
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     if (defaultValue) {
@@ -100,14 +106,11 @@ const CountryDropdownComponent = (
     }
   }, [defaultValue, options]);
 
-  const handleSelect = useCallback(
-    (country: Country) => {
-      setSelectedCountry(country);
-      onChange?.(country);
-      setOpen(false);
-    },
-    [onChange]
-  );
+  const handleSelect = useCallback((country: Country) => {
+    setSelectedCountry(country);
+    onChangeRef.current?.(country);
+    setOpen(false);
+  }, []);
 
   const triggerClasses = cn(
     'flex h-9 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-1 text-base whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none selection:text-primary-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30 [&>span]:line-clamp-1',
@@ -133,7 +136,7 @@ const CountryDropdownComponent = (
           </div>
         ) : (
           <span>
-            {slim === false ? placeholder || setSelectedCountry.name : <Globe size={20} />}
+            {slim === false ? placeholder : <Globe size={20} />}
           </span>
         )}
         <ChevronDown size={16} />
@@ -154,7 +157,7 @@ const CountryDropdownComponent = (
                 .filter((x) => x.name)
                 .map((option) => (
                   <CountryItem
-                    key={option.name}
+                    key={option.alpha3 || option.alpha2 || option.name}
                     option={option}
                     isSelected={option.alpha3 === selectedCountry?.alpha3}
                     onSelect={handleSelect}

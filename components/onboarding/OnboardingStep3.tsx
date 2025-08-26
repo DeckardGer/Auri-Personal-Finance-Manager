@@ -28,7 +28,7 @@ export function OnboardingStep3({
   prevStep: () => void;
   item: Variants;
 }) {
-  const { theme, setTheme } = useOnboardingStore();
+  const { theme, setTheme, getCurrentState } = useOnboardingStore();
 
   const form = useForm<OnboardingStep3Schema>({
     resolver: zodResolver(onboardingStep3Schema),
@@ -39,6 +39,7 @@ export function OnboardingStep3({
 
   const onSubmit = (values: OnboardingStep3Schema) => {
     setTheme(values);
+    console.log(getCurrentState());
     nextStep();
   };
 

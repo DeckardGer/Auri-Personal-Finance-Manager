@@ -94,7 +94,8 @@ export function OnboardingStep1({
                     <FormLabel>Country</FormLabel>
                     <CountryDropdown
                       placeholder="Select country"
-                      onChange={(country) => field.onChange(country)}
+                      defaultValue={field.value?.alpha3}
+                      onChange={field.onChange}
                     />
                     <FormMessage />
                   </FormItem>

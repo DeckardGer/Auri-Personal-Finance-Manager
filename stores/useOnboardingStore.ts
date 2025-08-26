@@ -16,6 +16,7 @@ type OnboardingState = {
   setUserDetails: (data: OnboardingStep1Schema) => void;
   setApiKey: (data: OnboardingStep2Schema) => void;
   setTheme: (data: OnboardingStep3Schema) => void;
+  getCurrentState: () => OnboardingState;
 };
 
 const initialState: Pick<OnboardingState, 'name' | 'job' | 'country' | 'apiKey' | 'theme'> = {
@@ -26,7 +27,7 @@ const initialState: Pick<OnboardingState, 'name' | 'job' | 'country' | 'apiKey' 
   theme: 'system',
 };
 
-export const useOnboardingStore = create<OnboardingState>((set) => ({
+export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   ...initialState,
 
   setUserDetails: (data) =>
@@ -48,4 +49,6 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
       ...state,
       theme: data.theme,
     })),
+
+  getCurrentState: () => get(),
 }));
