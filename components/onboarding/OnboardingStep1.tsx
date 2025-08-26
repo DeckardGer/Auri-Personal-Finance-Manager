@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { CountryDropdown } from '@/components/ui/country-dropdown';
 import { onboardingStep1Schema, OnboardingStep1Schema } from '@/types/onboarding-schemas';
 import { useOnboardingStore } from '@/stores/useOnboardingStore';
 
@@ -24,13 +25,14 @@ export function OnboardingStep1({
   prevStep: () => void;
   item: Variants;
 }) {
-  const { name, job, setUserDetails } = useOnboardingStore();
+  const { name, job, country, setUserDetails } = useOnboardingStore();
 
   const form = useForm<OnboardingStep1Schema>({
     resolver: zodResolver(onboardingStep1Schema),
     defaultValues: {
       name,
       job,
+      country,
     },
   });
 
@@ -78,6 +80,22 @@ export function OnboardingStep1({
                     <FormControl>
                       <Input placeholder="Software Engineer" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </motion.div>
+            <motion.div variants={item}>
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Country</FormLabel>
+                    <CountryDropdown
+                      placeholder="Select country"
+                      onChange={(country) => field.onChange(country)}
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

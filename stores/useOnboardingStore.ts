@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-
+import { Country } from '@/components/ui/country-dropdown';
 import {
   OnboardingStep1Schema,
   OnboardingStep2Schema,
@@ -9,6 +9,7 @@ import {
 type OnboardingState = {
   name: string;
   job: string;
+  country: Country | undefined;
   apiKey: string;
   theme: 'system' | 'light' | 'dark';
 
@@ -17,9 +18,10 @@ type OnboardingState = {
   setTheme: (data: OnboardingStep3Schema) => void;
 };
 
-const initialState: Pick<OnboardingState, 'name' | 'job' | 'apiKey' | 'theme'> = {
+const initialState: Pick<OnboardingState, 'name' | 'job' | 'country' | 'apiKey' | 'theme'> = {
   name: '',
   job: '',
+  country: undefined,
   apiKey: '',
   theme: 'system',
 };
@@ -32,6 +34,7 @@ export const useOnboardingStore = create<OnboardingState>((set) => ({
       ...state,
       name: data.name,
       job: data.job,
+      country: data.country,
     })),
 
   setApiKey: (data) =>
