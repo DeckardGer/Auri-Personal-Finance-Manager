@@ -2,16 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { motion, Variants } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 
-export function OnboardingCompleteStep({
-  item,
-  prevStep,
-}: {
-  item: Variants;
-  prevStep: () => void;
-}) {
+export function OnboardingCompleteStep({ item }: { item: Variants }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -70,11 +63,6 @@ export function OnboardingCompleteStep({
         <p className="mt-1.5 text-center text-sm text-muted-foreground">
           We&apos;re setting up your data behind the scenes so you can jump right in.
         </p>
-      </motion.div>
-      <motion.div variants={item}>
-        <Button className="w-full" onClick={prevStep}>
-          Back
-        </Button>
       </motion.div>
     </CardContent>
   );

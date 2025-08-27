@@ -131,7 +131,7 @@ export function OnboardingCard() {
                   'step-4': () => (
                     <OnboardingStep3 nextStep={methods.next} prevStep={methods.prev} item={item} />
                   ),
-                  'step-5': () => <OnboardingCompleteStep item={item} prevStep={methods.prev} />,
+                  'step-5': () => <OnboardingCompleteStep item={item} />,
                 })}
               </motion.div>
             </AnimatePresence>
