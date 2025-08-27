@@ -15,7 +15,7 @@ export function WelcomeStep({ nextStep, item }: { nextStep: () => void; item: Va
     <>
       <CardHeader>
         <motion.div variants={item}>
-          <CardTitle>Welcome to Auri</CardTitle>
+          <CardTitle>Welcome to Auri Geist</CardTitle>
         </motion.div>
         <motion.div variants={item}>
           <CardDescription>Let&apos;s set up your account to get started.</CardDescription>
@@ -24,7 +24,12 @@ export function WelcomeStep({ nextStep, item }: { nextStep: () => void; item: Va
 
       <CardContent>
         <motion.div variants={item}>
-          <Image src={welcomeImage} alt="Welcome" className="mx-auto w-7/12 object-cover" />
+          <Image
+            src={welcomeImage}
+            alt="Welcome"
+            className="mx-auto w-7/12 object-cover"
+            priority
+          />
         </motion.div>
       </CardContent>
 

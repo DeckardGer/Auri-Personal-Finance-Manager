@@ -7,7 +7,7 @@ import { WelcomeStep } from '@/components/onboarding/WelcomeStep';
 import { OnboardingStep1 } from '@/components/onboarding/OnboardingStep1';
 import { OnboardingStep2 } from '@/components/onboarding/OnboardingStep2';
 import { OnboardingStep3 } from '@/components/onboarding/OnboardingStep3';
-import { OnboardingStep4 } from '@/components/onboarding/OnboardingStep4';
+import { OnboardingCompleteStep } from '@/components/onboarding/OnboardingCompleteStep';
 import { defineStepper } from '@/components/ui/stepper';
 import { Check } from 'lucide-react';
 
@@ -79,7 +79,7 @@ export function OnboardingCard() {
                   className="px-6 pb-6"
                 >
                   <Stepper.Navigation>
-                    {methods.all.map((step) => (
+                    {methods.all.slice(0, -1).map((step) => (
                       <Stepper.Step
                         key={step.id}
                         of={step.id}
@@ -88,7 +88,7 @@ export function OnboardingCard() {
                             <Check className="size-4" />
                           ) : undefined
                         }
-                        className="data-[state=completed]:bg-green-500 data-[state=completed]:text-white data-[state=inactive]:text-gray-500"
+                        isLast={step.step === methods.all.length - 1 || undefined}
                       />
                     ))}
                   </Stepper.Navigation>
@@ -131,9 +131,7 @@ export function OnboardingCard() {
                   'step-4': () => (
                     <OnboardingStep3 nextStep={methods.next} prevStep={methods.prev} item={item} />
                   ),
-                  'step-5': () => (
-                    <OnboardingStep4 nextStep={methods.next} prevStep={methods.prev} item={item} />
-                  ),
+                  'step-5': () => <OnboardingCompleteStep item={item} prevStep={methods.prev} />,
                 })}
               </motion.div>
             </AnimatePresence>

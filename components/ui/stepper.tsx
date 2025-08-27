@@ -74,7 +74,7 @@ const defineStepper = <Steps extends Stepperize.Step[]>(
           </nav>
         );
       },
-      Step: ({ children, className, icon, ...props }) => {
+      Step: ({ children, className, icon, isLast: isLastProp, ...props }) => {
         const { variant, labelOrientation } = useStepperProvider();
         const { current } = useStepper();
 
@@ -85,7 +85,7 @@ const defineStepper = <Steps extends Stepperize.Step[]>(
         const step = steps[stepIndex];
         const currentIndex = utils.getIndex(current.id);
 
-        const isLast = utils.getLast().id === props.of;
+        const isLast = (isLastProp ?? false) || utils.getLast().id === props.of;
         const isActive = current.id === props.of;
 
         const dataState = getStepState(currentIndex, stepIndex);
@@ -138,7 +138,7 @@ const defineStepper = <Steps extends Stepperize.Step[]>(
                 type="button"
                 role="tab"
                 tabIndex={dataState !== 'inactive' ? 0 : -1}
-                className="h-6 w-6 rounded-full text-xs group-data-[state=completed]:bg-green-500 group-data-[state=completed]:text-white group-data-[state=inactive]:text-gray-500"
+                className="h-6 w-6 rounded-full text-xs group-data-[state=completed]:bg-success group-data-[state=completed]:text-white group-data-[state=inactive]:text-gray-500 hover:group-data-[state=completed]:bg-success/90"
                 variant={dataState !== 'inactive' ? 'default' : 'secondary'}
                 size="icon"
                 aria-controls={`step-panel-${props.of}`}
@@ -358,7 +358,7 @@ const classForNavigationList = cva('flex gap-1', {
 const classForSeparator = cva(
   [
     'bg-muted',
-    'data-[state=completed]:bg-green-500 data-[disabled]:opacity-50',
+    'data-[state=completed]:bg-success data-[disabled]:opacity-50',
     'transition-all duration-300 ease-in-out',
     'rounded-full',
   ],
@@ -473,6 +473,7 @@ type StepperDefineProps<Steps extends Stepperize.Step[]> = Omit<
       props: React.ComponentProps<'button'> & {
         of: Stepperize.Get.Id<Steps>;
         icon?: React.ReactNode;
+        isLast?: boolean;
       }
     ) => React.ReactElement;
     Title: (props: AsChildProps<'h4'>) => React.ReactElement;

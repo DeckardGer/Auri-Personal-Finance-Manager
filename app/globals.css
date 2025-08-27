@@ -25,6 +25,7 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-success: var(--success);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -60,6 +61,7 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
+  --success: oklch(0.696 0.2664 145.06);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -94,6 +96,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  --success: oklch(0.7289 0.2119 147.82);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -118,5 +121,37 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+.onboarding-loader {
+  width: 64px;
+  aspect-ratio: 1;
+  display: grid;
+}
+
+.onboarding-loader::before,
+.onboarding-loader::after {
+  content: '';
+  grid-area: 1/1;
+  --c: no-repeat radial-gradient(farthest-side, var(--color-success) 92%, #0000);
+  background:
+    var(--c) 50% 0,
+    var(--c) 50% 100%,
+    var(--c) 100% 50%,
+    var(--c) 0 50%;
+  background-size: 12px 12px;
+  animation: onboarding-loader-animation 1s infinite;
+}
+
+.onboarding-loader::before {
+  margin: 4px;
+  background-size: 8px 8px;
+  animation-timing-function: linear;
+}
+
+@keyframes onboarding-loader-animation {
+  100% {
+    transform: rotate(0.5turn);
   }
 }

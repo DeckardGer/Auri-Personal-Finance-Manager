@@ -116,7 +116,7 @@ export function OnboardingStep3({
           <Button variant="outline" onClick={prevStep}>
             Back
           </Button>
-          <Button onClick={nextStep}>Continue</Button>
+          <Button onClick={nextStep}>Finish</Button>
         </CardFooter>
       </motion.div>
     </>
