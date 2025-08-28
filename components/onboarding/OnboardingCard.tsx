@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useRef, useLayoutEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { Card } from '@/components/ui/card';
 import { WelcomeStep } from '@/components/onboarding/WelcomeStep';
 import { OnboardingStep1 } from '@/components/onboarding/OnboardingStep1';
@@ -9,10 +11,9 @@ import { OnboardingStep2 } from '@/components/onboarding/OnboardingStep2';
 import { OnboardingStep3 } from '@/components/onboarding/OnboardingStep3';
 import { OnboardingCompleteStep } from '@/components/onboarding/OnboardingCompleteStep';
 import { defineStepper } from '@/components/ui/stepper';
-import { Check } from 'lucide-react';
 import { useOnboardingStore } from '@/stores/useOnboardingStore';
 import { completeOnboarding } from '@/actions/onboarding';
-import { toast } from 'sonner';
+import { Check } from 'lucide-react';
 
 const container = {
   hidden: { opacity: 0 },
@@ -37,6 +38,7 @@ export function OnboardingCard() {
   const [showStepper, setShowStepper] = useState(false);
   const [state, setState] = useState<'loading' | 'success' | 'error'>('loading');
   const { getCurrentState } = useOnboardingStore();
+  const router = useRouter();
 
   const completeOnboardingForm = async () => {
     const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
@@ -45,6 +47,9 @@ export function OnboardingCard() {
       await completeOnboarding(getCurrentState());
       await minDelay;
       setState('success');
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      router.push('/dashboard');
     } catch (error) {
       await minDelay;
       console.error(error);
