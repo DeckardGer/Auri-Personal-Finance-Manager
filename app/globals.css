@@ -124,6 +124,17 @@
   }
 }
 
+.onboarding-background {
+  background-color: hsla(266, 38%, 2%, 1);
+  background-image:
+    radial-gradient(circle at 40% 93%, hsla(307, 76%, 5%, 1) 5%, transparent 68%),
+    radial-gradient(circle at 24% 68%, hsla(284, 75%, 25%, 1) 5%, transparent 68%),
+    radial-gradient(circle at 23% 88%, hsla(225, 67%, 44%, 1) 5%, transparent 68%),
+    radial-gradient(circle at 32% 65%, hsla(180, 66%, 45%, 1) 5%, transparent 68%),
+    radial-gradient(circle at 79% 47%, hsla(261, 60%, 41%, 1) 5%, transparent 68%);
+  background-blend-mode: normal, normal, normal, normal, normal;
+}
+
 .onboarding-loader {
   width: 64px;
   aspect-ratio: 1;
