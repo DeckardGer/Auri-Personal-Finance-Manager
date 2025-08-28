@@ -21,9 +21,3 @@ export const onboardingStep2Schema = z.object({
 });
 
 export type OnboardingStep2Schema = z.infer<typeof onboardingStep2Schema>;
-
-export const onboardingStep3Schema = z.object({
-  theme: z.enum(['system', 'light', 'dark']),
-});
-
-export type OnboardingStep3Schema = z.infer<typeof onboardingStep3Schema>;
