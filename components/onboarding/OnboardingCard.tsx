@@ -12,6 +12,7 @@ import { defineStepper } from '@/components/ui/stepper';
 import { Check } from 'lucide-react';
 import { useOnboardingStore } from '@/stores/useOnboardingStore';
 import { completeOnboarding } from '@/actions/onboarding';
+import { toast } from 'sonner';
 
 const container = {
   hidden: { opacity: 0 },
@@ -34,7 +35,7 @@ const { Stepper } = defineStepper(
 
 export function OnboardingCard() {
   const [showStepper, setShowStepper] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [state, setState] = useState<'loading' | 'success' | 'error'>('loading');
   const { getCurrentState } = useOnboardingStore();
 
   const completeOnboardingForm = async () => {
@@ -43,12 +44,23 @@ export function OnboardingCard() {
     try {
       await completeOnboarding(getCurrentState());
       await minDelay;
-      console.log('Done');
+      setState('success');
     } catch (error) {
       await minDelay;
       console.error(error);
-    } finally {
-      setLoading(false);
+      setState('error');
+
+      toast.error('Account creation failed', {
+        description: 'An error occurred while creating your account',
+        action: {
+          label: 'Retry',
+          onClick: () => {
+            setState('loading');
+            completeOnboardingForm();
+          },
+        },
+        duration: Infinity,
+      });
     }
   };
 
@@ -127,7 +139,7 @@ export function OnboardingCard() {
                       item={item}
                     />
                   ),
-                  'step-5': () => <OnboardingCompleteStep item={item} loading={loading} />,
+                  'step-5': () => <OnboardingCompleteStep item={item} state={state} />,
                 })}
               </motion.div>
             </AnimatePresence>
