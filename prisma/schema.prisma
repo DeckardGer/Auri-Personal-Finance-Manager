@@ -7,6 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            Int    @id @default(autoincrement())
+  name          String
+  job           String
+  countryName   String?
+  countrySymbol String?
+  currency      String?
+  apiKey        String
+}
+
 model Merchant {
   id                  Int                  @id @default(autoincrement())
   name                String

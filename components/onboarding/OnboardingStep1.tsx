@@ -13,7 +13,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CountryDropdown } from '@/components/ui/country-dropdown';
-import { onboardingStep1Schema, OnboardingStep1Schema } from '@/types/onboarding-schemas';
+import { onboardingStep1Schema, type OnboardingStep1Schema } from '@/types/onboarding-schemas';
 import { useOnboardingStore } from '@/stores/useOnboardingStore';
 
 export function OnboardingStep1({

@@ -30,7 +30,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <head>
-        <script crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
+        <script async crossOrigin="anonymous" src="//unpkg.com/react-scan/dist/auto.global.js" />
       </head>
       <body className="antialiased">
         <ThemeProvider

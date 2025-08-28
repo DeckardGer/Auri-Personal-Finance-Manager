@@ -15,7 +15,7 @@ export function WelcomeStep({ nextStep, item }: { nextStep: () => void; item: Va
     <>
       <CardHeader>
         <motion.div variants={item}>
-          <CardTitle>Welcome to Auri Geist</CardTitle>
+          <CardTitle>Welcome to Auri</CardTitle>
         </motion.div>
         <motion.div variants={item}>
           <CardDescription>Let&apos;s set up your account to get started.</CardDescription>

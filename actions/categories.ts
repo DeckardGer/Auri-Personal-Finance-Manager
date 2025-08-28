@@ -240,18 +240,14 @@ export const createDefaultCategories = async () => {
       },
     ];
 
-    const createdCategories = [];
     for (const categoryData of categories) {
-      const category = await prisma.category.create({
+      await prisma.category.create({
         data: categoryData,
         include: {
           subcategories: true,
         },
       });
-      createdCategories.push(category);
     }
-
-    return createdCategories;
   } catch (error) {
     throw error;
   }

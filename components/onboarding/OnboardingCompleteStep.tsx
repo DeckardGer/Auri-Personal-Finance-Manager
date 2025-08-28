@@ -1,17 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { CardContent } from '@/components/ui/card';
 
-export function OnboardingCompleteStep({ item }: { item: Variants }) {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
+export function OnboardingCompleteStep({ item, loading }: { item: Variants; loading: boolean }) {
   return (
     <CardContent>
       <motion.div variants={item}>

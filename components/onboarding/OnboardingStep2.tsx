@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { onboardingStep2Schema, OnboardingStep2Schema } from '@/types/onboarding-schemas';
+import { onboardingStep2Schema, type OnboardingStep2Schema } from '@/types/onboarding-schemas';
 import { useOnboardingStore } from '@/stores/useOnboardingStore';
 
 export function OnboardingStep2({

@@ -10,6 +10,8 @@ import { OnboardingStep3 } from '@/components/onboarding/OnboardingStep3';
 import { OnboardingCompleteStep } from '@/components/onboarding/OnboardingCompleteStep';
 import { defineStepper } from '@/components/ui/stepper';
 import { Check } from 'lucide-react';
+import { useOnboardingStore } from '@/stores/useOnboardingStore';
+import { completeOnboarding } from '@/actions/onboarding';
 
 const container = {
   hidden: { opacity: 0 },
@@ -22,36 +24,6 @@ const item = {
   show: { opacity: 1, y: 0 },
 };
 
-function AutoHeight({ children }: { children: React.ReactNode }) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number | 'auto'>('auto');
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    setHeight(el.getBoundingClientRect().height);
-
-    const ro = new ResizeObserver(() => {
-      const next = el.getBoundingClientRect().height;
-      setHeight(next);
-    });
-
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [children]);
-
-  return (
-    <motion.div
-      animate={{ height }}
-      initial={false}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div ref={ref}>{children}</div>
-    </motion.div>
-  );
-}
-
 const { Stepper } = defineStepper(
   { id: 'step-1', step: 1 },
   { id: 'step-2', step: 2 },
@@ -62,6 +34,23 @@ const { Stepper } = defineStepper(
 
 export function OnboardingCard() {
   const [showStepper, setShowStepper] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { getCurrentState } = useOnboardingStore();
+
+  const completeOnboardingForm = async () => {
+    const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
+
+    try {
+      await completeOnboarding(getCurrentState());
+      await minDelay;
+      console.log('Done');
+    } catch (error) {
+      await minDelay;
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Card className="w-full max-w-sm overflow-hidden">
@@ -129,9 +118,16 @@ export function OnboardingCard() {
                     <OnboardingStep2 nextStep={methods.next} prevStep={methods.prev} item={item} />
                   ),
                   'step-4': () => (
-                    <OnboardingStep3 nextStep={methods.next} prevStep={methods.prev} item={item} />
+                    <OnboardingStep3
+                      nextStep={() => {
+                        methods.next();
+                        completeOnboardingForm();
+                      }}
+                      prevStep={methods.prev}
+                      item={item}
+                    />
                   ),
-                  'step-5': () => <OnboardingCompleteStep item={item} />,
+                  'step-5': () => <OnboardingCompleteStep item={item} loading={loading} />,
                 })}
               </motion.div>
             </AnimatePresence>
@@ -139,5 +135,35 @@ export function OnboardingCard() {
         )}
       </Stepper.Provider>
     </Card>
+  );
+}
+
+function AutoHeight({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [height, setHeight] = useState<number | 'auto'>('auto');
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    setHeight(el.getBoundingClientRect().height);
+
+    const ro = new ResizeObserver(() => {
+      const next = el.getBoundingClientRect().height;
+      setHeight(next);
+    });
+
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [children]);
+
+  return (
+    <motion.div
+      animate={{ height }}
+      initial={false}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div ref={ref}>{children}</div>
+    </motion.div>
   );
 }
