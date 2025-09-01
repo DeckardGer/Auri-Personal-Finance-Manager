@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants } from 'motion/react';
 
 export function WelcomeStep({ nextStep, item }: { nextStep: () => void; item: Variants }) {
   return (

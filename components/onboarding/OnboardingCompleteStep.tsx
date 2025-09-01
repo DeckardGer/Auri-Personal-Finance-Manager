@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants } from 'motion/react';
 import { CardContent } from '@/components/ui/card';
 
 export function OnboardingCompleteStep({
