@@ -17,7 +17,7 @@ export function SidebarAppHeader() {
         className="h-8 w-8 hover:bg-transparent!"
         onClick={() => router.push('/dashboard')}
       >
-        <Image src={auriLogo} alt="Auri Logo" width={32} height={32} unoptimized priority />
+        <Image src={auriLogo} alt="Auri Logo" width={32} height={32} priority unoptimized />
       </Button>
       <h1 className="truncate text-lg font-semibold">Auri</h1>
     </div>

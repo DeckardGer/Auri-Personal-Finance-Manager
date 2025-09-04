@@ -1,4 +1,4 @@
-const jaroDistance = (s1: string, s2: string) => {
+export const jaroDistance = (s1: string, s2: string) => {
   if (s1 == s2) return 1.0;
 
   const len1 = s1.length;
