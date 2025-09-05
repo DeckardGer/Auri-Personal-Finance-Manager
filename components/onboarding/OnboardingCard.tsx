@@ -48,7 +48,7 @@ export function OnboardingCard() {
       await minDelay;
       setState('success');
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       router.push('/dashboard');
     } catch (error) {
       await minDelay;

@@ -8,13 +8,24 @@ datasource db {
 }
 
 model User {
-  id            Int    @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
   job           String
   countryName   String?
   countrySymbol String?
   currency      String?
   apiKey        String
+  settings      UserSettings?
+}
+
+model UserSettings {
+  id                     Int  @id @default(autoincrement())
+  userId                 Int  @unique
+  user                   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pendingDaysBuffer      Int  @default(14)
+  dateColumnIndex        Int?
+  amountColumnIndex      Int?
+  descriptionColumnIndex Int?
 }
 
 model Merchant {
@@ -34,28 +45,52 @@ model Subcategory {
   id                  Int                  @id @default(autoincrement())
   name                String
   categoryId          Int
-  category            Category             @relation(fields: [categoryId], references: [id])
+  category            Category             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   transactions        Transaction[]
   cleanedTransactions CleanedTransaction[]
 }
 
 model Transaction {
-  id            Int         @id @default(autoincrement())
+  id            Int                       @id @default(autoincrement())
   description   String
   merchantId    Int
-  merchant      Merchant    @relation(fields: [merchantId], references: [id])
+  merchant      Merchant                  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   subcategoryId Int
-  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
+  subcategory   Subcategory               @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
   amount        Float
   date          DateTime
-  verified      Boolean     @default(false)
+  verified      Boolean                   @default(false)
+  tempEdit      TempEditTransaction?
+  tempUnmatched TempUnmatchedTransaction?
 }
 
 model CleanedTransaction {
   id            Int         @id @default(autoincrement())
   description   String
   merchantId    Int
-  merchant      Merchant    @relation(fields: [merchantId], references: [id])
+  merchant      Merchant    @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   subcategoryId Int
-  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
+  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+}
+
+model TempAddTransaction {
+  id          Int      @id @default(autoincrement())
+  description String
+  amount      Float
+  date        DateTime
+}
+
+model TempEditTransaction {
+  id            Int         @id @default(autoincrement())
+  description   String
+  amount        Float
+  date          DateTime
+  transactionId Int         @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+}
+
+model TempUnmatchedTransaction {
+  id            Int         @id @default(autoincrement())
+  transactionId Int         @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
 }

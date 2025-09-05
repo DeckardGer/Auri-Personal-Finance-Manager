@@ -14,6 +14,9 @@ export const completeOnboarding = async (userDetails: OnboardingSchema) => {
         countrySymbol: userDetails.country?.alpha3,
         currency: userDetails.country?.currencies[0],
         apiKey: userDetails.apiKey,
+        settings: {
+          create: {},
+        },
       },
     });
 
