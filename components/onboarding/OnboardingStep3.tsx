@@ -63,7 +63,7 @@ export function OnboardingStep3({
                       />
                     </div>
                   </RadioGroupPrimitive.Item>
-                  <p className="text-center text-sm text-muted-foreground peer-data-[state=checked]:text-primary">
+                  <p className="text-center text-sm text-muted-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:text-black dark:peer-data-[state=checked]:text-white">
                     System
                   </p>
                 </div>
@@ -82,7 +82,7 @@ export function OnboardingStep3({
                       />
                     </div>
                   </RadioGroupPrimitive.Item>
-                  <p className="text-center text-sm text-muted-foreground peer-data-[state=checked]:text-primary">
+                  <p className="text-center text-sm text-muted-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:text-black">
                     Light
                   </p>
                 </div>
@@ -101,7 +101,7 @@ export function OnboardingStep3({
                       />
                     </div>
                   </RadioGroupPrimitive.Item>
-                  <p className="text-center text-sm text-muted-foreground peer-data-[state=checked]:text-primary">
+                  <p className="text-center text-sm text-muted-foreground peer-data-[state=checked]:font-semibold peer-data-[state=checked]:text-white">
                     Dark
                   </p>
                 </div>

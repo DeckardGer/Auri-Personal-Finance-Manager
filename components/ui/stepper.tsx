@@ -138,7 +138,7 @@ const defineStepper = <Steps extends Stepperize.Step[]>(
                 type="button"
                 role="tab"
                 tabIndex={dataState !== 'inactive' ? 0 : -1}
-                className="h-6 w-6 rounded-full text-xs group-data-[state=completed]:bg-success group-data-[state=completed]:text-white group-data-[state=inactive]:text-gray-500 hover:group-data-[state=completed]:bg-success/90"
+                className="h-6 w-6 rounded-full bg-muted text-xs group-data-[state=active]:text-secondary-foreground group-data-[state=completed]:bg-primary group-data-[state=completed]:text-white hover:not-group-data-[state=completed]:bg-muted/80 hover:group-data-[state=completed]:bg-primary/90"
                 variant={dataState !== 'inactive' ? 'default' : 'secondary'}
                 size="icon"
                 aria-controls={`step-panel-${props.of}`}
@@ -358,7 +358,7 @@ const classForNavigationList = cva('flex gap-1', {
 const classForSeparator = cva(
   [
     'bg-muted',
-    'data-[state=completed]:bg-success data-[disabled]:opacity-50',
+    'data-[state=completed]:bg-primary data-[disabled]:opacity-50',
     'transition-all duration-300 ease-in-out',
     'rounded-full',
   ],

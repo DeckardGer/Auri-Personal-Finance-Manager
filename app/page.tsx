@@ -1,6 +1,7 @@
 import { OnboardingCard } from '@/components/onboarding/OnboardingCard';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import { GridBeams } from '@/components/dashboard/grid-beams';
 
 export default async function Home() {
   const user = await prisma.user.findFirst();
@@ -8,9 +9,18 @@ export default async function Home() {
   if (user) redirect('/dashboard');
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      <div className="onboarding-background absolute inset-0 -z-10" />
+    <GridBeams
+      gridSize={0}
+      gridColor="rgba(255, 255, 255, 0.2)"
+      rayCount={20}
+      rayOpacity={0.55}
+      raySpeed={1.5}
+      rayLength="40vh"
+      gridFadeStart={5}
+      gridFadeEnd={90}
+      className="flex min-h-screen w-full items-center justify-center"
+    >
       <OnboardingCard />
-    </div>
+    </GridBeams>
   );
 }
