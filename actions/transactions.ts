@@ -18,6 +18,13 @@ type ProcessTransactionsResponse = { status: 'success' } | { status: 'error'; me
 
 export const processTransactions = async (file: File): Promise<ProcessTransactionsResponse> => {
   try {
+    // Delete previous temporary transactions
+    await prisma.$transaction([
+      prisma.tempAddTransaction.deleteMany(),
+      prisma.tempEditTransaction.deleteMany(),
+      prisma.tempUnmatchedTransaction.deleteMany(),
+    ]);
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const text = buffer.toString('utf-8');
