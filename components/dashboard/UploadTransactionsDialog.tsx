@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -33,9 +34,31 @@ const { Stepper } = defineStepper(
 export function UploadTransactionsDialog() {
   const { resolvedTheme } = useTheme();
   const [files, setFiles] = useState<FileWithPreview[]>([]);
+  const [test, setTest] = useState<string>('');
 
-  const preProcessTransactions = () => {
-    if (files[0].file instanceof File) processTransactions(files[0].file);
+  const preProcessTransactions = async () => {
+    if (!(files[0].file instanceof File)) {
+      toast.error('Issue uploading file', {
+        description: 'File is not a valid file',
+      });
+      return;
+    }
+
+    const transactionsResult = await processTransactions(files[0].file);
+
+    if (transactionsResult.status === 'error') {
+      toast.error('Issue uploading file', {
+        description: transactionsResult.message,
+      });
+      return;
+    }
+
+    setTest('Complete');
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    console.log('Complete');
+    // const aiResult = await processAITransactions()
   };
 
   return (
@@ -88,6 +111,7 @@ export function UploadTransactionsDialog() {
                 <DialogTitle className="text-center text-xl">Upload Transactions</DialogTitle>
                 <DialogDescription className="text-center text-base">
                   Your transactions will be automatically processed.
+                  {test}
                 </DialogDescription>
               </DialogHeader>
               <TransactionsFileUpload updateFiles={setFiles} />

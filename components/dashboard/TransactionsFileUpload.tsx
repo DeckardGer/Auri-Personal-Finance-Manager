@@ -33,7 +33,7 @@ export function TransactionsFileUpload({ className, updateFiles }: FileUploadPro
   useEffect(() => {
     if (errors.length > 0) {
       for (const error of errors) {
-        toast('Issue uploading file', {
+        toast.error('Issue uploading file', {
           description: error,
         });
       }
@@ -46,13 +46,15 @@ export function TransactionsFileUpload({ className, updateFiles }: FileUploadPro
         className={cn(
           'relative rounded-lg border border-dashed p-4 text-center transition-colors',
           isDragging
-            ? 'border-primary bg-primary/5'
-            : 'border-muted-foreground/25 hover:border-muted-foreground/50'
+            ? 'border-primary bg-primary/15'
+            : 'border-muted-foreground/25 hover:border-muted-foreground/50',
+          files.length > 0 ? 'cursor-default' : 'cursor-pointer'
         )}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        onClick={files.length === 0 ? openFileDialog : undefined}
       >
         <input {...getInputProps()} className="sr-only" />
 
@@ -78,23 +80,21 @@ export function TransactionsFileUpload({ className, updateFiles }: FileUploadPro
             <>
               <div
                 className={cn(
-                  'flex size-10 items-center justify-center rounded-md',
+                  'flex size-10 items-center justify-center rounded-md transition-colors',
                   isDragging ? 'bg-primary/10' : 'bg-muted'
                 )}
               >
                 <CloudUpload
-                  className={cn('size-5', isDragging ? 'text-primary' : 'text-muted-foreground')}
+                  className={cn(
+                    'size-5 transition-colors',
+                    isDragging ? 'text-primary' : 'text-muted-foreground'
+                  )}
                 />
               </div>
 
               <div className="space-y-2">
                 <h3 className="text-muted-foreground">
-                  <span
-                    onClick={openFileDialog}
-                    className="cursor-pointer font-semibold text-primary"
-                  >
-                    Click to upload
-                  </span>
+                  <span className="font-semibold text-primary">Click to upload</span>
                   &nbsp;or drag and drop
                 </h3>
                 <p className="text-xs text-muted-foreground">Only CSV files are supported.</p>
