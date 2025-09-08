@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,7 +19,8 @@ import { processTransactions } from '@/actions/transactions';
 import { FlickeringGrid } from '@/components/ui/flickering-grid';
 import { defineStepper } from '@/components/ui/stepper';
 import type { FileWithPreview } from '@/hooks/use-file-upload';
-import uploadTransactionsIcon from '@/public/Upload Transactions Icon.svg';
+import uploadTransactionsIconLight from '@/public/Upload Transactions Icon Light.svg';
+import uploadTransactionsIconDark from '@/public/Upload Transactions Icon Dark.svg';
 import { Check } from 'lucide-react';
 
 const { Stepper } = defineStepper(
@@ -29,6 +31,7 @@ const { Stepper } = defineStepper(
 );
 
 export function UploadTransactionsDialog() {
+  const { resolvedTheme } = useTheme();
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const preProcessTransactions = () => {
@@ -49,7 +52,7 @@ export function UploadTransactionsDialog() {
                   className="[border-radius:calc(var(--radius)-2px)] mask-b-from-0% mask-b-to-100%"
                   squareSize={3}
                   gridGap={6}
-                  color="#9438E5"
+                  color={resolvedTheme === 'dark' ? '#9e77ed' : '#7556d9'}
                   maxOpacity={0.5}
                   flickerChance={0.12}
                   height={220}
@@ -59,7 +62,11 @@ export function UploadTransactionsDialog() {
               <DialogHeader className="relative">
                 <div className="mx-auto flex items-center justify-center rounded-full bg-background p-1">
                   <Image
-                    src={uploadTransactionsIcon}
+                    src={
+                      resolvedTheme === 'dark'
+                        ? uploadTransactionsIconDark
+                        : uploadTransactionsIconLight
+                    }
                     alt="Upload Transactions Icon"
                     className="size-20"
                     unoptimized
