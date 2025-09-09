@@ -25,35 +25,40 @@ A modern, intuitive personal finance management application built with Next.js a
 ## Getting Started
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/DeckardGer/Auri-Personal-Finance-Manager.git
    cd Auri-Personal-Finance-Manager
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
    Create a `.env` file in the root directory and add the following:
+
    ```env
    # SQLite database connection
    DATABASE_URL="file:./dev.db"
-   
-   # OpenAI API key for transaction categorization (optional)
-   # OPENAI_API_KEY="your_openai_api_key"
+
+   # OpenAI API key for transaction categorization
+   OPENAI_API_KEY="your_openai_api_key"
    ```
-   
+
    For SQLite, the database file will be created automatically in your project root when you run the database setup commands.
 
 4. **Set up the database**
+
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
 5. **Run the development server**
+
    ```bash
    npm run dev
    ```
