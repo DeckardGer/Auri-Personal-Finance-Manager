@@ -1,7 +1,9 @@
 'use server';
 
-import { jaroWinkler, preprocessText } from '@/lib/stringComparison';
+import { openai, zodTextFormat } from '@/lib/openai';
+import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { jaroWinkler, preprocessText } from '@/lib/stringComparison';
 import type {
   SimpleTransaction,
   CSVTransaction,
@@ -16,7 +18,7 @@ type TransactionTempId = CSVTransaction & {
 
 type ProcessTransactionsResponse = { status: 'success' } | { status: 'error'; message: string };
 
-export const processTransactions = async (file: File): Promise<ProcessTransactionsResponse> => {
+export const preProcessTransactions = async (file: File): Promise<ProcessTransactionsResponse> => {
   try {
     // Delete previous temporary transactions
     await prisma.$transaction([
@@ -280,5 +282,71 @@ export const processTransactions = async (file: File): Promise<ProcessTransactio
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to process transactions';
     return { status: 'error', message };
+  }
+};
+
+export const processTransactions = async () => {
+  try {
+    const transactions = await prisma.tempAddTransaction.findMany();
+    const cleanedTransactions = transactions.map((transaction) => ({
+      description: transaction.description,
+      amount: transaction.amount,
+    }));
+
+    const merchants = await prisma.merchant.findMany({ select: { name: true } });
+    const categories = await prisma.category.findMany({
+      select: { name: true, subcategories: { select: { name: true } } },
+    });
+
+    const Transaction = z.object({
+      merchant: z.string(),
+      category: z.enum(
+        categories.flatMap((c) => c.subcategories.map((s) => `${c.name} - ${s.name}`))
+      ),
+    });
+
+    const TransactionsList = z.object({
+      transactions: z.array(Transaction),
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    //     const response = await openai.responses.parse({
+    //       model: 'gpt-5-mini',
+    //       reasoning: {
+    //         effort: 'low',
+    //       },
+    //       input: [
+    //         {
+    //           role: 'system',
+    //           content: `You are a transaction categorizer. Your task is to extract the merchant name and a category/subcategory pair from each provided list of transaction descriptions.
+
+    // Instructions:
+    // Merchant:
+    // - If the transaction clearly matches one of the known merchants, use that exact name.
+    // - If it does not match any known merchant, return a new merchant string.
+    // - Only list the merchant name if 100% sure you can extract the merchant from the description. If not, return an empty string.
+    // Category:
+    // - Always return in the format "<Primary Category> - <Subcategory>"
+
+    // Examples:
+    // - Given the description "WOOLWORTHS/NICHOLSON RD &CANNINGVAL", return {merchant: "Woolworths", category: "Food & Dining - Groceries"}
+    // - Given the description "BP Australia BPme", return {merchant: "BP", category: "Transportation - Fuel / Petrol"}
+
+    // Here is the list of known merchants: ${merchants.map((merchant) => merchant.name).join(', ')}`,
+    //         },
+    //         {
+    //           role: 'user',
+    //           content: `Classify these transactions: ${JSON.stringify([cleanedTransactions[0], cleanedTransactions[1]])}`,
+    //         },
+    //       ],
+    //       text: {
+    //         format: zodTextFormat(TransactionsList, 'transactions'),
+    //       },
+    //     });
+
+    //     console.log(response);
+  } catch (error) {
+    console.error(error);
   }
 };
