@@ -1,19 +1,31 @@
 'use client';
 
 import * as React from 'react';
-import { Home, Receipt, Settings, Store, Tags, MessageCircle } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ChartColumn,
+  Receipt,
+  Store,
+  Tags,
+  Settings,
+  MessageCircle,
+} from 'lucide-react';
 import { Sidebar, SidebarHeader, SidebarFooter, SidebarContent } from '@/components/ui/sidebar';
 import { SidebarAppHeader } from '@/components/sidebar/SidebarAppHeader';
 import { SidebarMainNav } from '@/components/sidebar/SidebarMainNav';
 import { SidebarFooterNav } from '@/components/sidebar/SidebarFooterNav';
 
-// This is sample data.
 const data = {
   mainNav: [
     {
       title: 'Dashboard',
       url: '/dashboard',
-      icon: Home,
+      icon: LayoutDashboard,
+    },
+    {
+      title: 'Analytics',
+      url: '/analytics',
+      icon: ChartColumn,
     },
     {
       title: 'Transactions',

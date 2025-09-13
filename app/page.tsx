@@ -1,7 +1,7 @@
 import { OnboardingCard } from '@/components/onboarding/OnboardingCard';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
-import { GridBeams } from '@/components/dashboard/grid-beams';
+import { GridBeams } from '@/components/onboarding/grid-beams';
 
 export default async function Home() {
   const user = await prisma.user.findFirst();

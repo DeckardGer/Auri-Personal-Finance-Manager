@@ -10,16 +10,16 @@ export function SidebarAppHeader() {
   const router = useRouter();
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center">
       <Button
         variant="ghost"
         size="icon"
         className="h-8 w-8 hover:bg-transparent!"
         onClick={() => router.push('/dashboard')}
       >
-        <Image src={auriLogo} alt="Auri Logo" width={32} height={32} priority unoptimized />
+        <Image src={auriLogo} alt="Auri Logo" width={32} height={32} priority />
       </Button>
-      <h1 className="truncate text-lg font-semibold">Auri</h1>
+      <h1 className="ml-2.5 truncate text-base font-semibold">Auri</h1>
     </div>
   );
 }
