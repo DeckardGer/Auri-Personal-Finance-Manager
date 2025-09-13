@@ -3,6 +3,8 @@ import { DataTable } from '@/components/transactions/data-table';
 import { type Transaction } from '@/types/transactions';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 async function getData(): Promise<Transaction[]> {
   const transactions = await prisma.transaction.findMany({
     select: {
@@ -14,6 +16,7 @@ async function getData(): Promise<Transaction[]> {
       category: true,
       subcategory: true,
     },
+    take: 50,
   });
 
   return transactions;
