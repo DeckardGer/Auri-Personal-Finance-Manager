@@ -32,13 +32,13 @@ model Merchant {
   id                  Int                  @id @default(autoincrement())
   name                String
   transactions        Transaction[]
-  cleanedTransactions CleanedTransaction[]
 }
 
 model Category {
   id            Int           @id @default(autoincrement())
   name          String
   subcategories Subcategory[]
+  transactions  Transaction[]
 }
 
 model Subcategory {
@@ -47,30 +47,22 @@ model Subcategory {
   categoryId          Int
   category            Category             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   transactions        Transaction[]
-  cleanedTransactions CleanedTransaction[]
 }
 
 model Transaction {
   id            Int                       @id @default(autoincrement())
   description   String
-  merchantId    Int
-  merchant      Merchant                  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
-  subcategoryId Int
-  subcategory   Subcategory               @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  merchantId    Int?
+  merchant      Merchant?                  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+  categoryId    Int?
+  category      Category?                  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subcategoryId Int?
+  subcategory   Subcategory?               @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
   amount        Float
   date          DateTime
   verified      Boolean                   @default(false)
   tempEdit      TempEditTransaction?
   tempUnmatched TempUnmatchedTransaction?
-}
-
-model CleanedTransaction {
-  id            Int         @id @default(autoincrement())
-  description   String
-  merchantId    Int
-  merchant      Merchant    @relation(fields: [merchantId], references: [id], onDelete: Cascade)
-  subcategoryId Int
-  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
 }
 
 model TempAddTransaction {
