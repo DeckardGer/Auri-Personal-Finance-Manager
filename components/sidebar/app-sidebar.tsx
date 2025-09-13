@@ -1,15 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-  LayoutDashboard,
-  ChartColumn,
-  Receipt,
-  Store,
-  Tags,
-  Settings,
-  MessageCircle,
-} from 'lucide-react';
+import { Home, ChartColumn, Receipt, Store, Tags, Settings, MessageCircle } from 'lucide-react';
 import { Sidebar, SidebarHeader, SidebarFooter, SidebarContent } from '@/components/ui/sidebar';
 import { SidebarAppHeader } from '@/components/sidebar/SidebarAppHeader';
 import { SidebarMainNav } from '@/components/sidebar/SidebarMainNav';
@@ -20,7 +12,7 @@ const data = {
     {
       title: 'Dashboard',
       url: '/dashboard',
-      icon: LayoutDashboard,
+      icon: Home,
     },
     {
       title: 'Analytics',
