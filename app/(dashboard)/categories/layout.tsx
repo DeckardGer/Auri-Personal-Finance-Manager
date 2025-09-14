@@ -22,7 +22,7 @@ export default async function Layout({
   return (
     <>
       <Header breadcrumbs={breadcrumbs} />
-      <Separator className="-mx-4 mt-2 mb-4 w-[calc(100%+2rem)]!" />
+      <Separator className="-mx-4 mt-1.5 mb-4 w-[calc(100%+2rem)]!" />
       <main>{children}</main>
     </>
   );

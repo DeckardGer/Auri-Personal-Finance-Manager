@@ -2,7 +2,14 @@
 
 import * as React from 'react';
 import { Home, ChartColumn, Receipt, Store, Tags, Settings, MessageCircle } from 'lucide-react';
-import { Sidebar, SidebarHeader, SidebarFooter, SidebarContent } from '@/components/ui/sidebar';
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarContent,
+  SidebarRail,
+  useSidebar,
+} from '@/components/ui/sidebar';
 import { SidebarAppHeader } from '@/components/sidebar/SidebarAppHeader';
 import { SidebarMainNav } from '@/components/sidebar/SidebarMainNav';
 import { SidebarFooterNav } from '@/components/sidebar/SidebarFooterNav';
@@ -50,6 +57,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state } = useSidebar();
+
   return (
     <Sidebar collapsible="icon" variant="inset" {...props}>
       <SidebarHeader>
@@ -61,6 +70,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter className="p-0">
         <SidebarFooterNav items={data.footerNav} />
       </SidebarFooter>
+      {state === 'collapsed' && <SidebarRail />}
     </Sidebar>
   );
 }
