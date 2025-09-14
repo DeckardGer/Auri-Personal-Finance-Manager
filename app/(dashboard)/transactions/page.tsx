@@ -24,7 +24,7 @@ async function getData(): Promise<Transaction[]> {
 // - Total transactions
 // - Current balance
 
-export default async function DemoPage() {
+export default async function Transactions() {
   const data = await getData();
 
   return (
