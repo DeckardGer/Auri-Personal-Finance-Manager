@@ -2,9 +2,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
-import { Separator } from '@/components/ui/separator';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { ThemeToggle } from '@/components/dashboard/ThemeToggle';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 export default async function Layout({
   children,
@@ -21,15 +19,8 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
-      <SidebarInset className="contain-inline-size">
-        <header className="flex h-16 shrink-0 items-center gap-2 ease-linear">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
-            <ThemeToggle />
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
+      <SidebarInset className="h-[calc(100vh-16px)] overflow-hidden">
+        <div className="p-4 pt-2">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
