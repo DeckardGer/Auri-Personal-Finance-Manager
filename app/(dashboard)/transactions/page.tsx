@@ -1,35 +1,37 @@
-import { columns } from '@/components/transactions/columns';
-import { DataTable } from '@/components/transactions/data-table';
-import { type Transaction } from '@/types/transactions';
-import { prisma } from '@/lib/prisma';
-
-async function getData(): Promise<Transaction[]> {
-  const transactions = await prisma.transaction.findMany({
-    select: {
-      id: true,
-      amount: true,
-      description: true,
-      date: true,
-      merchant: true,
-      category: true,
-      subcategory: true,
-    },
-    take: 50,
-  });
-
-  return transactions;
-}
+import { InfoCard } from '@/components/transactions/info-card';
 
 // TODO:
 // - Total transactions
 // - Current balance
 
-export default async function Transactions() {
-  const data = await getData();
-
+export default function Transactions() {
   return (
-    <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+    <div className="flex h-full flex-col">
+      <div className="flex-shrink-0">
+        <h1 className="text-xl font-medium tracking-tight">Your Transactions</h1>
+        <p className="text-sm text-secondary-foreground">
+          Browse your transaction history and keep track of your spending
+        </p>
+      </div>
+
+      {/* Scrollable content section */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="space-y-2 p-1">
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className="rounded-lg border bg-card p-4">
+              <h3 className="font-medium">Transaction {i + 1}</h3>
+              <p className="text-sm text-muted-foreground">Sample transaction data</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* <div className="flex-shrink-0 flex gap-2 mt-4">
+        <InfoCard />
+        <InfoCard />
+        <InfoCard />
+        <InfoCard />
+      </div> */}
     </div>
   );
 }

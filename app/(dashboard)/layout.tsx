@@ -19,8 +19,8 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
-      <SidebarInset className="h-[calc(100vh-16px)] overflow-hidden">
-        <div className="p-4 pt-1.5">{children}</div>
+      <SidebarInset className="h-[calc(100vh-16px)]">
+        <div className="overflow-hidden p-4 pt-1.5">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );
