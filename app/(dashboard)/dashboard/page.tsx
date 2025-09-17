@@ -1,6 +1,6 @@
 // import { UploadTransactionsDialog } from '@/components/dashboard/UploadTransactionsDialog';
 
-import { prisma } from '@/lib/prisma';
+import { getUser } from '@/lib/data';
 
 const getGreeting = () => {
   const date = new Date();
@@ -14,16 +14,16 @@ const getGreeting = () => {
 };
 
 export default async function Dashboard() {
-  const user = await prisma.user.findFirst();
+  const user = await getUser();
   const greeting = getGreeting();
 
   return (
     <div>
-      <h1>
+      <h1 className="text-xl font-bold">
         👋 {greeting}, {user?.name?.split(' ')[0]}
       </h1>
 
-      <h2>Overview</h2>
+      <h2 className="text-xl font-semibold">Overview</h2>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { prisma } from '@/lib/prisma';
 import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import { getUser } from '@/lib/data';
 
 export default async function Layout({
   children,
@@ -12,7 +12,7 @@ export default async function Layout({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get('sidebar_state')?.value === 'true';
 
-  const user = await prisma.user.findFirst();
+  const user = await getUser();
 
   if (!user) redirect('/');
 
