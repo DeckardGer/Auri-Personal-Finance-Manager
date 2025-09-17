@@ -135,9 +135,7 @@ const CountryDropdownComponent = (
             )}
           </div>
         ) : (
-          <span>
-            {slim === false ? placeholder : <Globe size={20} />}
-          </span>
+          <span>{slim === false ? placeholder : <Globe size={20} />}</span>
         )}
         <ChevronDown size={16} />
       </PopoverTrigger>
