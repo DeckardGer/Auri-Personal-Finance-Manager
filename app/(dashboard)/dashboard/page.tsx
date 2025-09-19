@@ -2,28 +2,21 @@
 
 import { getUser } from '@/lib/data';
 
-const getGreeting = () => {
-  const date = new Date();
-  const hours = date.getHours();
-
-  let greeting = 'Good morning';
-  if (hours >= 12 && hours < 18) greeting = 'Good afternoon';
-  if (hours >= 18) greeting = 'Good evening';
-
-  return greeting;
-};
-
 export default async function Dashboard() {
   const user = await getUser();
-  const greeting = getGreeting();
 
   return (
-    <div>
-      <h1 className="text-xl font-bold">
-        👋 {greeting}, {user?.name?.split(' ')[0]}
-      </h1>
-
-      <h2 className="text-xl font-semibold">Overview</h2>
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex flex-shrink-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl font-medium tracking-tight">
+            Hello, {user?.name?.split(' ')[0]} 👋
+          </h1>
+          <p className="text-sm text-secondary-foreground">
+            Check out your latest financial insights and track your progress.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

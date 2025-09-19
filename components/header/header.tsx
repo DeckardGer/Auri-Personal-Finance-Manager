@@ -60,7 +60,7 @@ export function Header({ breadcrumbs }: HeaderProps) {
             Ask AI
           </span>
         </Button>
-        <Separator orientation="vertical" className="data-[orientation=vertical]:h-9" />
+        <Separator orientation="vertical" className="data-[orientation=vertical]:h-5" />
         <Button variant="outline" size="icon">
           <Bell />
         </Button>
