@@ -5,7 +5,7 @@ export default function Analytics() {
         <div>
           <h1 className="text-xl font-medium tracking-tight">Analytics</h1>
           <p className="text-sm text-secondary-foreground">
-            Visualize your spending patterns and financial insights
+            Visualise your spending patterns and financial insights
           </p>
         </div>
       </div>
