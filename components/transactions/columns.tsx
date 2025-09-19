@@ -18,18 +18,6 @@ export const columns: ColumnDef<Transaction>[] = [
     },
   },
   {
-    accessorKey: 'description',
-    header: 'Description',
-  },
-  {
-    accessorKey: 'date',
-    header: 'Date',
-    cell: ({ row }) => {
-      const date = row.getValue('date') as Date;
-      return date.toDateString();
-    },
-  },
-  {
     accessorKey: 'merchant',
     header: 'Merchant',
     cell: ({ row }) => {
@@ -38,19 +26,36 @@ export const columns: ColumnDef<Transaction>[] = [
     },
   },
   {
-    accessorKey: 'category',
+    id: 'category',
     header: 'Category',
-    cell: ({ row }) => {
-      const category = row.getValue('category') as { name?: string } | null;
-      return category?.name || '';
+    accessorFn: (row) => ({
+      category: row.category,
+      subcategory: row.subcategory,
+    }),
+    cell: ({ getValue }) => {
+      const { category, subcategory } = getValue<{
+        category?: { name?: string } | null;
+        subcategory?: { name?: string } | null;
+      }>();
+
+      if (category?.name && subcategory?.name) {
+        return (
+          <div>
+            <div className="font-medium">{category.name}</div>
+            <div className="text-sm text-secondary-foreground">{subcategory.name}</div>
+          </div>
+        );
+      }
+
+      return category?.name || subcategory?.name || '';
     },
   },
   {
-    accessorKey: 'subcategory',
-    header: 'Subcategory',
+    accessorKey: 'date',
+    header: 'Date',
     cell: ({ row }) => {
-      const subcategory = row.getValue('subcategory') as { name?: string } | null;
-      return subcategory?.name || '';
+      const date = row.getValue('date') as Date;
+      return date.toDateString();
     },
   },
 ];

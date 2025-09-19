@@ -87,12 +87,7 @@ export default async function Transactions() {
         />
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-4">
-        <div className="flex-shrink-0">Filters</div>
-        <div className="flex-1 overflow-y-auto">
-          <DataTable columns={columns} data={data} />
-        </div>
-      </div>
+      <DataTable columns={columns} data={data} />
     </div>
   );
 }
