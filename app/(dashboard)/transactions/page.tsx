@@ -2,43 +2,9 @@ import { InfoCard } from '@/components/transactions/info-card';
 import { Button } from '@/components/ui/button';
 import { columns } from '@/components/transactions/columns';
 import { DataTable } from '@/components/transactions/data-table';
-import { type Transaction } from '@/types/transactions';
-import { prisma } from '@/lib/prisma';
 import { ListChecks, Wallet, CalendarRange, Calculator, FileDown, Upload } from 'lucide-react';
 
-/*
-Columns:
- - ID (NOT SHOWN)
- - Checkbox
- - Amount
- - Description (NOT SHOWN)
- - Date
- - Merchant
- - Category
- - Subcategory
- - Verified (MAYBE NOT SHOWN)
-*/
-
-async function getData(): Promise<Transaction[]> {
-  const transactions = await prisma.transaction.findMany({
-    select: {
-      id: true,
-      amount: true,
-      description: true,
-      date: true,
-      merchant: true,
-      category: true,
-      subcategory: true,
-    },
-    take: 50,
-  });
-
-  return transactions;
-}
-
 export default async function Transactions() {
-  const data = await getData();
-
   return (
     <div className="flex h-full flex-col gap-4">
       <div className="flex flex-shrink-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -87,7 +53,7 @@ export default async function Transactions() {
         />
       </div>
 
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={columns} />
     </div>
   );
 }

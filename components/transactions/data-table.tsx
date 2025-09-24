@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ColumnDef,
   VisibilityState,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -16,60 +17,122 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DataTableToolbar } from '@/components/transactions/data-table-toolbar';
+import { DataTablePagination } from '@/components/transactions/data-table-pagination';
+import { Merchant } from '@/types/merchants';
+import { Category } from '@/types/categories';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TValue>) {
+  const [data, setData] = useState<TData[]>([]);
+  const [total, setTotal] = useState(0);
+  const [merchants, setMerchants] = useState<{ id: number; name: string }[]>([]);
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+
+  // server state
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 50,
+  });
+  const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+
+  // client state
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+
+  useEffect(() => {
+    setPagination({
+      pageIndex: 0,
+      pageSize: pagination.pageSize,
+    });
+  }, [columnFilters, pagination.pageSize]);
+
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      try {
+        const [merchantsRes, categoriesRes] = await Promise.all([
+          fetch('/api/merchants', {
+            cache: 'force-cache',
+            next: {
+              tags: ['merchants'],
+            },
+          }),
+          fetch('/api/categories', {
+            cache: 'force-cache',
+            next: {
+              tags: ['categories'],
+            },
+          }),
+        ]);
+
+        const merchantsData: Merchant[] = await merchantsRes.json();
+        const categoriesData: Category[] = await categoriesRes.json();
+
+        setMerchants(merchantsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+      }
+    };
+
+    fetchDropdownData();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const sortBy = sorting[0]?.id ?? 'date';
+      const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
+
+      // Extract filter values from column filters
+      const merchantFilter = columnFilters.find((f) => f.id === 'merchant')?.value as string;
+      const categoryFilter = columnFilters.find((f) => f.id === 'category')?.value as string;
+
+      const params = new URLSearchParams({
+        pageIndex: pagination.pageIndex.toString(),
+        pageSize: pagination.pageSize.toString(),
+        sortBy,
+        sortOrder,
+        ...(merchantFilter && { merchantId: merchantFilter }),
+        ...(categoryFilter && { categoryId: categoryFilter }),
+      });
+
+      const res = await fetch(`/api/transactions?${params}`);
+      const json = await res.json();
+      setData(json.data);
+      setTotal(json.total);
+    };
+    fetchData();
+  }, [pagination, sorting, columnFilters]);
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
+    pageCount: Math.ceil(total / pagination.pageSize),
+    manualPagination: true,
+    manualSorting: true,
+    manualFiltering: true,
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
+      sorting,
+      columnFilters,
       columnVisibility,
+      rowSelection,
+      pagination,
     },
   });
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex items-center py-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DataTableToolbar table={table} merchants={merchants} categories={categories} />
       <div className="flex h-full flex-col overflow-hidden rounded-md border">
         <Table>
           <TableHeader className="sticky top-0 z-1 bg-background shadow-md">
@@ -108,6 +171,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           </TableBody>
         </Table>
       </div>
+      <DataTablePagination table={table} />
     </div>
   );
 }
