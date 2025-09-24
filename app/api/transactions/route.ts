@@ -10,26 +10,23 @@ export async function GET(req: Request) {
   const sortBy = searchParams.get('sortBy') ?? 'date';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'desc';
 
-  const merchantId = searchParams.get('merchantId');
-  const categoryId = searchParams.get('categoryId');
+  // Get multiple merchant and category IDs
+  const merchantIds = searchParams.getAll('merchantId');
+  const categoryIds = searchParams.getAll('categoryId');
 
   const where: {
-    OR?: Array<
-      | { description: { contains: string; mode: 'insensitive' } }
-      | { merchant: { is: { name: { contains: string } } } }
-    >;
-    merchant?: { is: { id: number } };
-    category?: { is: { id: number } };
+    merchant?: { id: { in: number[] } };
+    category?: { id: { in: number[] } };
   } = {};
 
-  // Add merchant filter
-  if (merchantId) {
-    where.merchant = { is: { id: Number(merchantId) } };
+  if (merchantIds.length > 0) {
+    const merchantIdNumbers = merchantIds.map((id) => Number(id));
+    where.merchant = { id: { in: merchantIdNumbers } };
   }
 
-  // Add category filter
-  if (categoryId) {
-    where.category = { is: { id: Number(categoryId) } };
+  if (categoryIds.length > 0) {
+    const categoryIdNumbers = categoryIds.map((id) => Number(id));
+    where.category = { id: { in: categoryIdNumbers } };
   }
 
   const [data, total] = await Promise.all([

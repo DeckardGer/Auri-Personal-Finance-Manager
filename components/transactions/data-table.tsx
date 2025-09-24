@@ -90,18 +90,23 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
       const sortBy = sorting[0]?.id ?? 'date';
       const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
 
-      // Extract filter values from column filters
-      const merchantFilter = columnFilters.find((f) => f.id === 'merchant')?.value as string;
-      const categoryFilter = columnFilters.find((f) => f.id === 'category')?.value as string;
+      const merchantFilter = columnFilters.find((f) => f.id === 'merchant')?.value as string[];
+      const categoryFilter = columnFilters.find((f) => f.id === 'category')?.value as string[];
 
       const params = new URLSearchParams({
         pageIndex: pagination.pageIndex.toString(),
         pageSize: pagination.pageSize.toString(),
         sortBy,
         sortOrder,
-        ...(merchantFilter && { merchantId: merchantFilter }),
-        ...(categoryFilter && { categoryId: categoryFilter }),
       });
+
+      if (merchantFilter && merchantFilter.length > 0) {
+        merchantFilter.forEach((id) => params.append('merchantId', id));
+      }
+
+      if (categoryFilter && categoryFilter.length > 0) {
+        categoryFilter.forEach((id) => params.append('categoryId', id));
+      }
 
       const res = await fetch(`/api/transactions?${params}`);
       const json = await res.json();
