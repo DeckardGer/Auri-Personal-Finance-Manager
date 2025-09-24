@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   ColumnDef,
   VisibilityState,
@@ -44,12 +44,15 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
+  const prevFiltersRef = useRef<string>('');
+
   useEffect(() => {
-    setPagination({
-      pageIndex: 0,
-      pageSize: pagination.pageSize,
-    });
-  }, [columnFilters, pagination.pageSize]);
+    const currentFilters = JSON.stringify(columnFilters);
+    if (currentFilters !== prevFiltersRef.current && pagination.pageIndex !== 0) {
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    }
+    prevFiltersRef.current = currentFilters;
+  }, [columnFilters, pagination.pageIndex, setPagination]);
 
   useEffect(() => {
     const fetchDropdownData = async () => {
