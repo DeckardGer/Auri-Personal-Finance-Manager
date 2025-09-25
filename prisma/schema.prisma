@@ -21,17 +21,19 @@ model User {
 model UserSettings {
   id                     Int  @id @default(autoincrement())
   userId                 Int  @unique
-  user                   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   pendingDaysBuffer      Int  @default(14)
   dateColumnIndex        Int?
   amountColumnIndex      Int?
   descriptionColumnIndex Int?
+  user                   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Merchant {
-  id                  Int                  @id @default(autoincrement())
-  name                String
-  transactions        Transaction[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  transactions Transaction[]
+
+  @@index([name])
 }
 
 model Category {
@@ -39,30 +41,37 @@ model Category {
   name          String
   subcategories Subcategory[]
   transactions  Transaction[]
+
+  @@index([name])
 }
 
 model Subcategory {
-  id                  Int                  @id @default(autoincrement())
-  name                String
-  categoryId          Int
-  category            Category             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  transactions        Transaction[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  categoryId   Int
+  category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
 }
 
 model Transaction {
   id            Int                       @id @default(autoincrement())
   description   String
   merchantId    Int?
-  merchant      Merchant?                  @relation(fields: [merchantId], references: [id], onDelete: Cascade)
   categoryId    Int?
-  category      Category?                  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   subcategoryId Int?
-  subcategory   Subcategory?               @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
   amount        Float
   date          DateTime
   verified      Boolean                   @default(false)
   tempEdit      TempEditTransaction?
   tempUnmatched TempUnmatchedTransaction?
+  subcategory   Subcategory?              @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  category      Category?                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  merchant      Merchant?                 @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  @@index([date])
+  @@index([amount])
+  @@index([merchantId, date])
+  @@index([categoryId, date])
 }
 
 model TempAddTransaction {
