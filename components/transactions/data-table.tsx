@@ -37,7 +37,9 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
     pageIndex: 0,
     pageSize: 50,
   });
-  const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([]);
+  const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([
+    { id: 'date', desc: true },
+  ]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   // client state

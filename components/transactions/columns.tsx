@@ -1,18 +1,10 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Checkbox } from '@/components/ui/checkbox';
+import { DataTableColumnHeader } from '@/components/transactions/data-table-column-header';
+import { DataTableRowActions } from '@/components/transactions/data-table-row-actions';
 import { type Transaction } from '@/types/transactions';
-import { MoreHorizontal } from 'lucide-react';
 
 export const columns: ColumnDef<Transaction>[] = [
   {
@@ -38,7 +30,9 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'amount',
-    header: () => <div className="text-right">Amount</div>,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Amount" className="justify-end" />
+    ),
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'));
       const formatted = new Intl.NumberFormat('en-US', {
@@ -84,7 +78,7 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'date',
-    header: 'Date',
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
     cell: ({ row }) => {
       const date = row.getValue('date') as string;
       return new Date(date).toDateString();
@@ -92,30 +86,6 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     id: 'actions',
-    cell: ({ row }) => {
-      const transaction = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(transaction.id.toString())}
-            >
-              Copy transaction ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: () => <DataTableRowActions />,
   },
 ];
