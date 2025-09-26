@@ -139,11 +139,11 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   });
 
   return (
-    <div className="flex min-h-[400px] flex-1 flex-col gap-2">
+    <div className="flex min-h-[400px] flex-1 flex-col rounded-xl border">
       <DataTableToolbar table={table} merchants={merchants} categories={categories} />
-      <div className="flex h-full flex-col overflow-hidden rounded-md border">
+      <div className="flex h-full flex-col overflow-hidden">
         <Table>
-          <TableHeader className="sticky top-0 z-1 bg-background shadow-md">
+          <TableHeader className="sticky top-0 z-1 bg-background after:absolute after:right-0 after:bottom-0 after:left-0 after:border-b after:border-border">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
