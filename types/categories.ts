@@ -1,7 +1,10 @@
-// import { Subcategory } from "@prisma/client";
+export type Subcategory = {
+  id: number;
+  name: string;
+};
 
 export type Category = {
   id: number;
   name: string;
-  // subcategories: Subcategory[];
+  subcategories: Subcategory[];
 };

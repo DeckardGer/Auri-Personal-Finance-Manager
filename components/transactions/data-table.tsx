@@ -29,17 +29,15 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TValue>) {
   const [data, setData] = useState<TData[]>([]);
   const [total, setTotal] = useState(0);
-  const [merchants, setMerchants] = useState<{ id: number; name: string }[]>([]);
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   // server state
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
   });
-  const [sorting, setSorting] = useState<{ id: string; desc: boolean }[]>([
-    { id: 'date', desc: true },
-  ]);
+  const [sorting, setSorting] = useState([{ id: 'date', desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   // client state
@@ -141,7 +139,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   });
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
       <DataTableToolbar table={table} merchants={merchants} categories={categories} />
       <div className="flex h-full flex-col overflow-hidden rounded-md border">
         <Table>
