@@ -139,7 +139,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   });
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-2">
+    <div className="flex min-h-[400px] flex-1 flex-col gap-2">
       <DataTableToolbar table={table} merchants={merchants} categories={categories} />
       <div className="flex h-full flex-col overflow-hidden rounded-md border">
         <Table>

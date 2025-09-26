@@ -92,5 +92,7 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     id: 'actions',
     cell: () => <DataTableRowActions />,
+    enableSorting: false,
+    enableHiding: false,
   },
 ];
