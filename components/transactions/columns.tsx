@@ -2,7 +2,8 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { DataTableColumnHeader } from '@/components/transactions/data-table-column-header';
+import { DataTableColumnSortHeader } from '@/components/transactions/data-table-column-sort-header';
+import { DataTableColumnViewHeader } from '@/components/transactions/data-table-column-view-header';
 import { DataTableRowActions } from '@/components/transactions/data-table-row-actions';
 import { type Transaction } from '@/types/transactions';
 
@@ -31,7 +32,7 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: 'amount',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" className="justify-end" />
+      <DataTableColumnSortHeader column={column} title="Amount" className="justify-end" />
     ),
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'));
@@ -45,7 +46,9 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'merchant',
-    header: 'Merchant',
+    header: ({ column }) => (
+      <DataTableColumnViewHeader column={column} title="Merchant" href="/merchants" />
+    ),
     cell: ({ row }) => {
       const merchant = row.getValue('merchant') as { name?: string } | null;
       return merchant?.name || '';
@@ -53,7 +56,9 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     id: 'category',
-    header: 'Category',
+    header: ({ column }) => (
+      <DataTableColumnViewHeader column={column} title="Category" href="/categories" />
+    ),
     accessorFn: (row) => ({
       category: row.category,
       subcategory: row.subcategory,
@@ -78,7 +83,7 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'date',
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
+    header: ({ column }) => <DataTableColumnSortHeader column={column} title="Date" />,
     cell: ({ row }) => {
       const date = row.getValue('date') as string;
       return new Date(date).toDateString();
