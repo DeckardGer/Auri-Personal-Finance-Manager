@@ -37,6 +37,7 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
                 key={column.id}
                 className="capitalize"
                 checked={column.getIsVisible()}
+                onSelect={(e) => e.preventDefault()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
                 {column.id}
