@@ -11,22 +11,22 @@ export async function GET(req: Request) {
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'desc';
 
   // Get multiple merchant and category IDs
-  const merchantIds = searchParams.getAll('merchantId');
-  const categoryIds = searchParams.getAll('categoryId');
+  const merchantIdsParam = searchParams.get('merchantId');
+  const categoryIdsParam = searchParams.get('categoryId');
 
   const where: {
     merchant?: { id: { in: number[] } };
     category?: { id: { in: number[] } };
   } = {};
 
-  if (merchantIds.length > 0) {
-    const merchantIdNumbers = merchantIds.map((id) => Number(id));
-    where.merchant = { id: { in: merchantIdNumbers } };
+  if (merchantIdsParam) {
+    const merchantIds = merchantIdsParam.split(',').map((id) => Number(id.trim()));
+    where.merchant = { id: { in: merchantIds } };
   }
 
-  if (categoryIds.length > 0) {
-    const categoryIdNumbers = categoryIds.map((id) => Number(id));
-    where.category = { id: { in: categoryIdNumbers } };
+  if (categoryIdsParam) {
+    const categoryIds = categoryIdsParam.split(',').map((id) => Number(id.trim()));
+    where.category = { id: { in: categoryIds } };
   }
 
   const [data, total] = await Promise.all([

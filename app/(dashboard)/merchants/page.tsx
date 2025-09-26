@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button';
+import { columns } from '@/components/merchants/columns';
+import { DataTable } from '@/components/merchants/data-table';
 import { Plus } from 'lucide-react';
 
 export default function Merchants() {
@@ -18,6 +20,8 @@ export default function Merchants() {
           </Button>
         </div>
       </div>
+
+      <DataTable columns={columns} />
     </div>
   );
 }

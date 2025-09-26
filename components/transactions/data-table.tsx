@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
+import { DataTableToolbar } from '@/components/transactions/data-table-toolbar';
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
 import { Merchant } from '@/types/merchants';
 import { Category } from '@/types/categories';
@@ -101,11 +101,11 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
       });
 
       if (merchantFilter && merchantFilter.length > 0) {
-        merchantFilter.forEach((id) => params.append('merchantId', id));
+        params.append('merchantId', merchantFilter.join(','));
       }
 
       if (categoryFilter && categoryFilter.length > 0) {
-        categoryFilter.forEach((id) => params.append('categoryId', id));
+        params.append('categoryId', categoryFilter.join(','));
       }
 
       const res = await fetch(`/api/transactions?${params}`);
