@@ -1,7 +1,7 @@
 import { InfoCard } from '@/components/transactions/info-card';
 import { Button } from '@/components/ui/button';
 import { columns } from '@/components/transactions/columns';
-import { DataTable } from '@/components/transactions/data-table';
+import { DataTable } from '@/components/data-table/data-table';
 import { ListChecks, Wallet, CalendarRange, Calculator, FileDown, Upload } from 'lucide-react';
 
 export default async function Transactions() {

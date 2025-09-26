@@ -17,8 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { DataTableToolbar } from '@/components/transactions/data-table-toolbar';
-import { DataTablePagination } from '@/components/transactions/data-table-pagination';
+import { DataTableToolbar } from '@/components/data-table/data-table-toolbar';
+import { DataTablePagination } from '@/components/data-table/data-table-pagination';
 import { Merchant } from '@/types/merchants';
 import { Category } from '@/types/categories';
 

@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
-import { DataTableColumnSortHeader } from '@/components/transactions/data-table-column-sort-header';
-import { DataTableColumnViewHeader } from '@/components/transactions/data-table-column-view-header';
-import { DataTableRowActions } from '@/components/transactions/data-table-row-actions';
+import { DataTableColumnSortHeader } from '@/components/data-table/data-table-column-sort-header';
+import { DataTableColumnViewHeader } from '@/components/data-table/data-table-column-view-header';
+import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { type Transaction } from '@/types/transactions';
 
 export const columns: ColumnDef<Transaction>[] = [
@@ -31,17 +31,15 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: 'amount',
-    header: ({ column }) => (
-      <DataTableColumnSortHeader column={column} title="Amount" className="justify-end" />
-    ),
+    header: ({ column }) => <DataTableColumnSortHeader column={column} title="Amount" />,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'));
-      const formatted = new Intl.NumberFormat('en-US', {
+      const formatted = new Intl.NumberFormat('en-AU', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'AUD',
       }).format(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="font-medium">{formatted}</div>;
     },
   },
   {

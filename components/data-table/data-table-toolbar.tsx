@@ -1,8 +1,8 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { DataTableViewOptions } from '@/components/transactions/data-table-view-options';
-import { DataTableFacetedFilter } from '@/components/transactions/data-table-faceted-filter';
+import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
+import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
 import { Button } from '@/components/ui/button';
 import { Merchant } from '@/types/merchants';
 import { Category } from '@/types/categories';
