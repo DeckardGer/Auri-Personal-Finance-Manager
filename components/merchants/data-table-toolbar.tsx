@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Table } from '@tanstack/react-table';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,18 @@ interface DataTableToolbarProps<TData> {
 }
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
+  const [localValue, setLocalValue] = useState(
+    (table.getColumn('name')?.getFilterValue() as string) ?? ''
+  );
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      table.getColumn('name')?.setFilterValue(localValue);
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [localValue, table]);
+
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -18,8 +31,8 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter merchants..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+          value={localValue}
+          onChange={(event) => setLocalValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
         {isFiltered && (

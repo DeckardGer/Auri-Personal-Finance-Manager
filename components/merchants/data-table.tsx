@@ -28,7 +28,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const [data, setData] = useState<TData[]>([]);
   const [total, setTotal] = useState(0);
 
-  // server state
+  // Server state
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const [sorting, setSorting] = useState([{ id: 'id', desc: true }]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  // client state
+  // Client state
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
