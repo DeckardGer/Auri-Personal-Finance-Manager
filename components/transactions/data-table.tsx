@@ -47,14 +47,6 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const prevFiltersRef = useRef<string>('');
 
   useEffect(() => {
-    const currentFilters = JSON.stringify(columnFilters);
-    if (currentFilters !== prevFiltersRef.current && pagination.pageIndex !== 0) {
-      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    }
-    prevFiltersRef.current = currentFilters;
-  }, [columnFilters, pagination.pageIndex, setPagination]);
-
-  useEffect(() => {
     const fetchDropdownData = async () => {
       try {
         const [merchantsRes, categoriesRes] = await Promise.all([
@@ -86,6 +78,14 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   }, []);
 
   useEffect(() => {
+    const currentFilters = JSON.stringify(columnFilters);
+    const isFilterChange = currentFilters !== prevFiltersRef.current;
+    if (isFilterChange && pagination.pageIndex !== 0) {
+      setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+      return;
+    }
+    prevFiltersRef.current = currentFilters;
+
     const fetchData = async () => {
       const sortBy = sorting[0]?.id ?? 'date';
       const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';

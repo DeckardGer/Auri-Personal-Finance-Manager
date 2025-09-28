@@ -44,13 +44,13 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
 
   useEffect(() => {
     const currentFilters = JSON.stringify(columnFilters);
-    if (currentFilters !== prevFiltersRef.current && pagination.pageIndex !== 0) {
+    const isFilterChange = currentFilters !== prevFiltersRef.current;
+    if (isFilterChange && pagination.pageIndex !== 0) {
       setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+      return;
     }
     prevFiltersRef.current = currentFilters;
-  }, [columnFilters, pagination.pageIndex, setPagination]);
 
-  useEffect(() => {
     const fetchData = async () => {
       const sortBy = sorting[0]?.id ?? 'id';
       const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
