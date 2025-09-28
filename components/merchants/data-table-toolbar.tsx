@@ -17,11 +17,18 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
   );
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      table.getColumn('name')?.setFilterValue(localValue);
-    }, 300);
+    const currentFilterValue = table.getColumn('name')?.getFilterValue() as string;
 
-    return () => clearTimeout(handler);
+    const normalizedLocalValue = localValue || '';
+    const normalizedCurrentValue = currentFilterValue || '';
+
+    if (normalizedLocalValue !== normalizedCurrentValue) {
+      const handler = setTimeout(() => {
+        table.getColumn('name')?.setFilterValue(localValue);
+      }, 300);
+
+      return () => clearTimeout(handler);
+    }
   }, [localValue, table]);
 
   const isFiltered = table.getState().columnFilters.length > 0;
