@@ -13,19 +13,21 @@ export async function GET(req: Request) {
   const sortBy = searchParams.get('sortBy') ?? 'id';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'desc';
 
+  const where: {
+    name?: { contains: string };
+  } = {};
+
+  if (name) {
+    where.name = { contains: name };
+  }
+
   if (sortBy === 'total amount') {
     const [totals, total] = await Promise.all([
       prisma.transaction.groupBy({
         by: ['merchantId'],
         where: {
-          merchantId: {
-            not: null,
-          },
-          merchant: {
-            name: {
-              contains: name,
-            },
-          },
+          merchantId: { not: null },
+          merchant: where,
         },
         _sum: { amount: true },
         orderBy: { _sum: { amount: sortOrder } },
@@ -33,11 +35,7 @@ export async function GET(req: Request) {
         take: pageSize,
       }),
       prisma.merchant.count({
-        where: {
-          name: {
-            contains: name,
-          },
-        },
+        where,
       }),
     ]);
 
@@ -72,14 +70,18 @@ export async function GET(req: Request) {
     return NextResponse.json({ data: sortedMerchants, total });
   }
 
+  let orderBy: Record<string, 'asc' | 'desc'> | { transactions: { _count: 'asc' | 'desc' } } = {
+    [sortBy]: sortOrder,
+  };
+
+  if (sortBy === 'transactions') {
+    orderBy = { transactions: { _count: sortOrder } };
+  }
+
   const [data, total] = await Promise.all([
     prisma.merchant.findMany({
-      where: {
-        name: {
-          contains: name,
-        },
-      },
-      orderBy: { [sortBy]: sortOrder },
+      where,
+      orderBy,
       skip: pageIndex * pageSize,
       take: pageSize,
       select: {

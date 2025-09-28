@@ -10,7 +10,6 @@ export async function GET(req: Request) {
   const sortBy = searchParams.get('sortBy') ?? 'date';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'desc';
 
-  // Get multiple merchant and category IDs
   const merchantIdsParam = searchParams.get('merchantId');
   const categoryIdsParam = searchParams.get('categoryId');
 

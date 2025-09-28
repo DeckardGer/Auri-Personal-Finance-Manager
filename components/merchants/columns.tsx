@@ -48,7 +48,7 @@ export const columns: ColumnDef<MerchantWithDetails>[] = [
   },
   {
     accessorKey: 'transactions',
-    header: 'Transactions',
+    header: ({ column }) => <DataTableColumnSortHeader column={column} title="Transactions" />,
   },
   {
     id: 'actions',
