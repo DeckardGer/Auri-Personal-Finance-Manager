@@ -5,5 +5,5 @@ export type Merchant = {
 
 export type MerchantWithDetails = Merchant & {
   totalAmount: number;
-  numberOfTransactions: number;
+  transactions: number;
 };

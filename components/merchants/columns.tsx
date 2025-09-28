@@ -3,6 +3,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
+import { DataTableColumnSortHeader } from '@/components/data-table/data-table-column-sort-header';
 import { type MerchantWithDetails } from '@/types/merchants';
 
 export const columns: ColumnDef<MerchantWithDetails>[] = [
@@ -32,12 +33,22 @@ export const columns: ColumnDef<MerchantWithDetails>[] = [
     header: 'Name',
   },
   {
-    accessorKey: 'numberOfTransactions',
-    header: 'Number of transactions',
+    id: 'total amount',
+    accessorKey: 'totalAmount',
+    header: ({ column }) => <DataTableColumnSortHeader column={column} title="Total Amount" />,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue('total amount'));
+      const formatted = new Intl.NumberFormat('en-AU', {
+        style: 'currency',
+        currency: 'AUD',
+      }).format(amount);
+
+      return <div>{formatted}</div>;
+    },
   },
   {
-    accessorKey: 'totalAmount',
-    header: 'Total amount',
+    accessorKey: 'transactions',
+    header: 'Transactions',
   },
   {
     id: 'actions',

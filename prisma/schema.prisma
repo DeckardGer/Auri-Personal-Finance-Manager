@@ -72,6 +72,8 @@ model Transaction {
   @@index([amount])
   @@index([merchantId, date])
   @@index([categoryId, date])
+  @@index([merchantId, amount])
+  @@index([categoryId, amount])
 }
 
 model TempAddTransaction {
