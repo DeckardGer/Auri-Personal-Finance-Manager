@@ -7,14 +7,22 @@ import { DataTableFacetedFilter } from '@/components/data-table/data-table-facet
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Category } from '@prisma/client';
-import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { X, Check } from 'lucide-react';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   categories: Category[];
+  showCategoriesOnly: boolean;
+  onToggleCategoriesOnly: (value: boolean) => void;
 }
 
-export function DataTableToolbar<TData>({ table, categories }: DataTableToolbarProps<TData>) {
+export function DataTableToolbar<TData>({
+  table,
+  categories,
+  showCategoriesOnly,
+  onToggleCategoriesOnly,
+}: DataTableToolbarProps<TData>) {
   const [localValue, setLocalValue] = useState(
     (table.getColumn('subcategory')?.getFilterValue() as string) ?? ''
   );
@@ -52,6 +60,24 @@ export function DataTableToolbar<TData>({ table, categories }: DataTableToolbarP
             options={categories.map((c) => ({ value: c.id.toString(), label: c.name }))}
           />
         )}
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 border-dashed"
+          onClick={() => onToggleCategoriesOnly(!showCategoriesOnly)}
+        >
+          <div
+            className={cn(
+              'flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+              showCategoriesOnly
+                ? 'bg-primary text-primary-foreground'
+                : 'opacity-50 [&_svg]:invisible'
+            )}
+          >
+            <Check />
+          </div>
+          Categories Only
+        </Button>
         {isFiltered && (
           <Button
             variant="ghost"

@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { CategoryWithDetails } from '@/types/categories';
+import { SubcategoryWithDetails } from '@/types/categories';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -16,44 +16,55 @@ export async function GET(req: Request) {
   const categoryIdsParam = searchParams.get('categoryId');
 
   const where: {
-    name?: { contains: string };
-    id?: { in: number[] };
+    OR?: Array<{
+      name?: { contains: string };
+      category?: {
+        name?: { contains: string };
+      };
+    }>;
+    category?: { id: { in: number[] } };
   } = {};
 
   if (name) {
-    where.name = { contains: name };
+    where.OR = [{ name: { contains: name } }, { category: { name: { contains: name } } }];
   }
 
   if (categoryIdsParam) {
     const categoryIds = categoryIdsParam.split(',').map((id) => Number(id.trim()));
-    where.id = { in: categoryIds };
+    where.category = { id: { in: categoryIds } };
   }
 
   if (sortBy === 'total amount') {
     const [totals, total] = await Promise.all([
       prisma.transaction.groupBy({
-        by: ['categoryId'],
+        by: ['subcategoryId'],
         where: {
-          categoryId: { not: null },
-          ...where,
+          subcategoryId: { not: null },
+          subcategory: where,
         },
         _sum: { amount: true },
         orderBy: { _sum: { amount: sortOrder } },
         skip: pageIndex * pageSize,
         take: pageSize,
       }),
-      prisma.category.count({
+      prisma.subcategory.count({
         where,
       }),
     ]);
 
-    const categoryIds = totals.map((t) => t.categoryId).filter((id) => id !== null);
+    const subcategoryIds = totals.map((t) => t.subcategoryId).filter((id) => id !== null);
 
-    const categories = await prisma.category.findMany({
-      where: { id: { in: categoryIds } },
+    const subcategories = await prisma.subcategory.findMany({
+      where: { id: { in: subcategoryIds } },
       select: {
         id: true,
         name: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         _count: {
           select: {
             transactions: true,
@@ -62,20 +73,22 @@ export async function GET(req: Request) {
       },
     });
 
-    const categoryMap = new Map(categories.map((c) => [c.id, c]));
+    const subcategoryMap = new Map(subcategories.map((s) => [s.id, s]));
 
-    const sortedCategories = totals.map((t) => {
-      const category = categoryMap.get(t.categoryId!)!;
+    const sortedSubcategories = totals.map((t) => {
+      const subcategory = subcategoryMap.get(t.subcategoryId!)!;
 
       return {
-        categoryId: category.id,
-        categoryName: category.name,
+        id: subcategory.id,
+        name: subcategory.name,
+        categoryId: subcategory.category.id,
+        categoryName: subcategory.category.name,
         totalAmount: t._sum.amount ?? 0,
-        transactions: category._count.transactions,
+        transactions: subcategory._count.transactions,
       };
     });
 
-    return NextResponse.json({ data: sortedCategories, total });
+    return NextResponse.json({ data: sortedSubcategories, total });
   }
 
   let orderBy: Record<string, 'asc' | 'desc'> | { transactions: { _count: 'asc' | 'desc' } } = {
@@ -87,7 +100,7 @@ export async function GET(req: Request) {
   }
 
   const [data, total] = await Promise.all([
-    prisma.category.findMany({
+    prisma.subcategory.findMany({
       where,
       orderBy,
       skip: pageIndex * pageSize,
@@ -95,6 +108,12 @@ export async function GET(req: Request) {
       select: {
         id: true,
         name: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         _count: {
           select: {
             transactions: true,
@@ -107,15 +126,17 @@ export async function GET(req: Request) {
         },
       },
     }),
-    prisma.category.count({ where }),
+    prisma.subcategory.count({ where }),
   ]);
 
-  const categoriesWithDetails: CategoryWithDetails[] = data.map((category) => ({
-    categoryId: category.id,
-    categoryName: category.name,
-    totalAmount: category.transactions.reduce((sum, transaction) => sum + transaction.amount, 0),
-    transactions: category._count.transactions,
+  const subcategoriesWithDetails: SubcategoryWithDetails[] = data.map((subcategory) => ({
+    id: subcategory.id,
+    name: subcategory.name,
+    categoryId: subcategory.category.id,
+    categoryName: subcategory.category.name,
+    totalAmount: subcategory.transactions.reduce((sum, transaction) => sum + transaction.amount, 0),
+    transactions: subcategory._count.transactions,
   }));
 
-  return NextResponse.json({ data: categoriesWithDetails, total });
+  return NextResponse.json({ data: subcategoriesWithDetails, total });
 }

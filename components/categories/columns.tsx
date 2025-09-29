@@ -30,7 +30,7 @@ export const columns: ColumnDef<SubcategoryWithDetails>[] = [
   },
   {
     id: 'category',
-    accessorKey: 'category.name',
+    accessorKey: 'categoryName',
     header: 'Category',
   },
   {

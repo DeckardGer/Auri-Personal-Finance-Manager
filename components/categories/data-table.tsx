@@ -29,6 +29,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const [data, setData] = useState<TData[]>([]);
   const [total, setTotal] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showCategoriesOnly, setShowCategoriesOnly] = useState(false);
 
   // Server state
   const [pagination, setPagination] = useState({
@@ -98,13 +99,21 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
         params.append('categoryId', categoryFilter.join(','));
       }
 
-      const res = await fetch(`/api/categories-with-details?${params}`);
+      const apiUrl = showCategoriesOnly
+        ? '/api/categories-with-details'
+        : '/api/subcategories-with-details';
+      const res = await fetch(`${apiUrl}?${params}`);
       const json = await res.json();
       setData(json.data);
       setTotal(json.total);
+
+      setColumnVisibility((prev) => ({
+        ...prev,
+        subcategory: !showCategoriesOnly,
+      }));
     };
     fetchData();
-  }, [pagination, sorting, columnFilters]);
+  }, [pagination, sorting, columnFilters, showCategoriesOnly]);
 
   const table = useReactTable({
     data,
@@ -130,7 +139,12 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
 
   return (
     <div className="flex min-h-[400px] flex-1 flex-col rounded-xl border">
-      <DataTableToolbar table={table} categories={categories} />
+      <DataTableToolbar
+        table={table}
+        categories={categories}
+        showCategoriesOnly={showCategoriesOnly}
+        onToggleCategoriesOnly={setShowCategoriesOnly}
+      />
       <div className="flex h-full flex-col overflow-hidden">
         <Table>
           <TableHeader className="sticky top-0 z-1 bg-background after:absolute after:right-0 after:bottom-0 after:left-0 after:border-b after:border-border">
