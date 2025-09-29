@@ -4,9 +4,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { DataTableColumnSortHeader } from '@/components/data-table/data-table-column-sort-header';
-import { type MerchantWithDetails } from '@/types/merchants';
+import { type SubcategoryWithDetails } from '@/types/categories';
 
-export const columns: ColumnDef<MerchantWithDetails>[] = [
+export const columns: ColumnDef<SubcategoryWithDetails>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -29,8 +29,13 @@ export const columns: ColumnDef<MerchantWithDetails>[] = [
     enableHiding: false,
   },
   {
+    id: 'category',
+    accessorKey: 'category.name',
+    header: 'Category',
+  },
+  {
     accessorKey: 'name',
-    header: 'Name',
+    header: 'Subcategory',
   },
   {
     id: 'total amount',

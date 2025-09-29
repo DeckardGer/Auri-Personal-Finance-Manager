@@ -8,3 +8,14 @@ export type Category = {
   name: string;
   subcategories: Subcategory[];
 };
+
+type PlainCategory = {
+  id: number;
+  name: string;
+};
+
+export type SubcategoryWithDetails = Subcategory & {
+  totalAmount: number;
+  transactions: number;
+  category: PlainCategory;
+};

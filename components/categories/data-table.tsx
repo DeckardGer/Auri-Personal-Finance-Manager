@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { DataTableToolbar } from '@/components/merchants/data-table-toolbar';
+import { DataTableToolbar } from '@/components/categories/data-table-toolbar';
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
 
 interface DataTableProps<TData, TValue> {
@@ -42,14 +42,6 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
 
   const prevFiltersRef = useRef<string>('');
 
-  const tableRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (tableRef.current) {
-      tableRef.current.scrollTop = 0;
-    }
-  }, [pagination]);
-
   useEffect(() => {
     const currentFilters = JSON.stringify(columnFilters);
     const isFilterChange = currentFilters !== prevFiltersRef.current;
@@ -59,11 +51,13 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
     }
     prevFiltersRef.current = currentFilters;
 
+    console.log(currentFilters);
+
     const fetchData = async () => {
       const sortBy = sorting[0]?.id ?? 'id';
       const sortOrder = sorting[0]?.desc ? 'desc' : 'asc';
 
-      const nameFilter = columnFilters.find((f) => f.id === 'name')?.value as string;
+      const nameFilter = columnFilters.find((f) => f.id === 'category')?.value as string;
 
       const params = new URLSearchParams({
         pageIndex: pagination.pageIndex.toString(),
@@ -76,7 +70,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
         params.append('name', nameFilter);
       }
 
-      const res = await fetch(`/api/merchants-with-details?${params}`);
+      const res = await fetch(`/api/categories-with-details?${params}`);
       const json = await res.json();
       setData(json.data);
       setTotal(json.total);

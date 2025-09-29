@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { MerchantWithDetails } from '@/types/merchants';
+import { SubcategoryWithDetails } from '@/types/categories';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -14,38 +14,49 @@ export async function GET(req: Request) {
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'desc';
 
   const where: {
-    name?: { contains: string };
+    OR?: Array<{
+      name?: { contains: string };
+      category?: {
+        name?: { contains: string };
+      };
+    }>;
   } = {};
 
   if (name) {
-    where.name = { contains: name };
+    where.OR = [{ name: { contains: name } }, { category: { name: { contains: name } } }];
   }
 
   if (sortBy === 'total amount') {
     const [totals, total] = await Promise.all([
       prisma.transaction.groupBy({
-        by: ['merchantId'],
+        by: ['subcategoryId'],
         where: {
-          merchantId: { not: null },
-          merchant: where,
+          subcategoryId: { not: null },
+          subcategory: where,
         },
         _sum: { amount: true },
         orderBy: { _sum: { amount: sortOrder } },
         skip: pageIndex * pageSize,
         take: pageSize,
       }),
-      prisma.merchant.count({
+      prisma.subcategory.count({
         where,
       }),
     ]);
 
-    const merchantIds = totals.map((t) => t.merchantId).filter((id) => id !== null);
+    const subcategoryIds = totals.map((t) => t.subcategoryId).filter((id) => id !== null);
 
-    const merchants = await prisma.merchant.findMany({
-      where: { id: { in: merchantIds } },
+    const subcategories = await prisma.subcategory.findMany({
+      where: { id: { in: subcategoryIds } },
       select: {
         id: true,
         name: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         _count: {
           select: {
             transactions: true,
@@ -54,20 +65,21 @@ export async function GET(req: Request) {
       },
     });
 
-    const merchantMap = new Map(merchants.map((m) => [m.id, m]));
+    const subcategoryMap = new Map(subcategories.map((s) => [s.id, s]));
 
-    const sortedMerchants = totals.map((t) => {
-      const merchant = merchantMap.get(t.merchantId!)!;
+    const sortedSubcategories = totals.map((t) => {
+      const subcategory = subcategoryMap.get(t.subcategoryId!)!;
 
       return {
-        id: merchant.id,
-        name: merchant.name,
+        id: subcategory.id,
+        name: subcategory.name,
+        category: subcategory.category,
         totalAmount: t._sum.amount ?? 0,
-        transactions: merchant._count.transactions,
+        transactions: subcategory._count.transactions,
       };
     });
 
-    return NextResponse.json({ data: sortedMerchants, total });
+    return NextResponse.json({ data: sortedSubcategories, total });
   }
 
   let orderBy: Record<string, 'asc' | 'desc'> | { transactions: { _count: 'asc' | 'desc' } } = {
@@ -79,7 +91,7 @@ export async function GET(req: Request) {
   }
 
   const [data, total] = await Promise.all([
-    prisma.merchant.findMany({
+    prisma.subcategory.findMany({
       where,
       orderBy,
       skip: pageIndex * pageSize,
@@ -87,6 +99,12 @@ export async function GET(req: Request) {
       select: {
         id: true,
         name: true,
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         _count: {
           select: {
             transactions: true,
@@ -99,15 +117,16 @@ export async function GET(req: Request) {
         },
       },
     }),
-    prisma.merchant.count({ where }),
+    prisma.subcategory.count({ where }),
   ]);
 
-  const merchantsWithDetails: MerchantWithDetails[] = data.map((merchant) => ({
-    id: merchant.id,
-    name: merchant.name,
-    totalAmount: merchant.transactions.reduce((sum, transaction) => sum + transaction.amount, 0),
-    transactions: merchant._count.transactions,
+  const subcategoriesWithDetails: SubcategoryWithDetails[] = data.map((subcategory) => ({
+    id: subcategory.id,
+    name: subcategory.name,
+    category: subcategory.category,
+    totalAmount: subcategory.transactions.reduce((sum, transaction) => sum + transaction.amount, 0),
+    transactions: subcategory._count.transactions,
   }));
 
-  return NextResponse.json({ data: merchantsWithDetails, total });
+  return NextResponse.json({ data: subcategoriesWithDetails, total });
 }

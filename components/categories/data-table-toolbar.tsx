@@ -13,18 +13,18 @@ interface DataTableToolbarProps<TData> {
 
 export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>) {
   const [localValue, setLocalValue] = useState(
-    (table.getColumn('name')?.getFilterValue() as string) ?? ''
+    (table.getColumn('category')?.getFilterValue() as string) ?? ''
   );
 
   useEffect(() => {
-    const currentFilterValue = table.getColumn('name')?.getFilterValue() as string;
+    const currentFilterValue = table.getColumn('category')?.getFilterValue() as string;
 
     const normalizedLocalValue = localValue || '';
     const normalizedCurrentValue = currentFilterValue || '';
 
     if (normalizedLocalValue !== normalizedCurrentValue) {
       const handler = setTimeout(() => {
-        table.getColumn('name')?.setFilterValue(localValue);
+        table.getColumn('category')?.setFilterValue(localValue);
       }, 300);
 
       return () => clearTimeout(handler);
@@ -37,7 +37,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     <div className="flex items-center justify-between border-b p-2">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter merchants..."
+          placeholder="Filter categories..."
           value={localValue}
           onChange={(event) => setLocalValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
