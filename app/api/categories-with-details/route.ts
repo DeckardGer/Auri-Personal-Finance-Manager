@@ -13,6 +13,8 @@ export async function GET(req: Request) {
   const sortBy = searchParams.get('sortBy') ?? 'id';
   const sortOrder = (searchParams.get('sortOrder') as 'asc' | 'desc') ?? 'desc';
 
+  const categoryIdsParam = searchParams.get('categoryId');
+
   const where: {
     OR?: Array<{
       name?: { contains: string };
@@ -20,10 +22,16 @@ export async function GET(req: Request) {
         name?: { contains: string };
       };
     }>;
+    category?: { id: { in: number[] } };
   } = {};
 
   if (name) {
     where.OR = [{ name: { contains: name } }, { category: { name: { contains: name } } }];
+  }
+
+  if (categoryIdsParam) {
+    const categoryIds = categoryIdsParam.split(',').map((id) => Number(id.trim()));
+    where.category = { id: { in: categoryIds } };
   }
 
   if (sortBy === 'total amount') {

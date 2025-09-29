@@ -51,6 +51,8 @@ model Subcategory {
   categoryId   Int
   category     Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   transactions Transaction[]
+
+  @@index([name])
 }
 
 model Transaction {
@@ -74,6 +76,7 @@ model Transaction {
   @@index([categoryId, date])
   @@index([merchantId, amount])
   @@index([categoryId, amount])
+  @@index([subcategoryId, amount])
 }
 
 model TempAddTransaction {

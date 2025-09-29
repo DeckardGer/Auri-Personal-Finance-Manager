@@ -34,6 +34,7 @@ export const columns: ColumnDef<SubcategoryWithDetails>[] = [
     header: 'Category',
   },
   {
+    id: 'subcategory',
     accessorKey: 'name',
     header: 'Subcategory',
   },
