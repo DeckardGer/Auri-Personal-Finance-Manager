@@ -44,6 +44,8 @@ export function DataTableToolbar<TData>({
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
+  const hiddenColumns = showCategoriesOnly ? ['subcategory'] : [];
+
   return (
     <div className="flex items-center justify-between border-b p-2">
       <div className="flex flex-1 items-center space-x-2">
@@ -92,7 +94,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <DataTableViewOptions table={table} hiddenColumns={hiddenColumns} />
     </div>
   );
 }
