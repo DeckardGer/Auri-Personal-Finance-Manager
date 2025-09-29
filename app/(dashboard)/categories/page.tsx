@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button';
+import { columns } from '@/components/categories/columns';
+import { DataTable } from '@/components/categories/data-table';
 import { Plus } from 'lucide-react';
 
 export default function Categories() {
@@ -18,6 +20,8 @@ export default function Categories() {
           </Button>
         </div>
       </div>
+
+      <DataTable columns={columns} />
     </div>
   );
 }
