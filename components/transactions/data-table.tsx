@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
               tags: ['merchants'],
             },
           }),
-          fetch('/api/categories', {
+          fetch('/api/categories?includeSubcategories=true', {
             cache: 'force-cache',
             next: {
               tags: ['categories'],

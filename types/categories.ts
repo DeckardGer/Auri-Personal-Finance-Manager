@@ -1,4 +1,4 @@
-export type Subcategory = {
+type Subcategory = {
   id: number;
   name: string;
 };
@@ -6,7 +6,7 @@ export type Subcategory = {
 export type Category = {
   id: number;
   name: string;
-  subcategories: Subcategory[];
+  subcategories?: Subcategory[];
 };
 
 export type CategoryWithDetails = {
