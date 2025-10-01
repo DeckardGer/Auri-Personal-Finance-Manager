@@ -7,6 +7,11 @@ import { DataTableColumnViewHeader } from '@/components/data-table/data-table-co
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { type Transaction } from '@/types/transactions';
 
+const currencyFormatter = new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+});
+
 export const columns: ColumnDef<Transaction>[] = [
   {
     id: 'select',
@@ -34,10 +39,7 @@ export const columns: ColumnDef<Transaction>[] = [
     header: ({ column }) => <DataTableColumnSortHeader column={column} title="Amount" />,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('amount'));
-      const formatted = new Intl.NumberFormat('en-AU', {
-        style: 'currency',
-        currency: 'AUD',
-      }).format(amount);
+      const formatted = currencyFormatter.format(amount);
 
       return <div className="font-medium">{formatted}</div>;
     },

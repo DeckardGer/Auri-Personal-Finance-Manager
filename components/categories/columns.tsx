@@ -6,6 +6,11 @@ import { DataTableRowActions } from '@/components/data-table/data-table-row-acti
 import { DataTableColumnSortHeader } from '@/components/data-table/data-table-column-sort-header';
 import { type SubcategoryWithDetails } from '@/types/categories';
 
+const currencyFormatter = new Intl.NumberFormat('en-AU', {
+  style: 'currency',
+  currency: 'AUD',
+});
+
 export const columns: ColumnDef<SubcategoryWithDetails>[] = [
   {
     id: 'select',
@@ -44,10 +49,7 @@ export const columns: ColumnDef<SubcategoryWithDetails>[] = [
     header: ({ column }) => <DataTableColumnSortHeader column={column} title="Total Amount" />,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue('total amount'));
-      const formatted = new Intl.NumberFormat('en-AU', {
-        style: 'currency',
-        currency: 'AUD',
-      }).format(amount);
+      const formatted = currencyFormatter.format(amount);
 
       return <div>{formatted}</div>;
     },
