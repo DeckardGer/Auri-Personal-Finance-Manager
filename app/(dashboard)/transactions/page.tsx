@@ -2,7 +2,8 @@ import { Button } from '@/components/ui/button';
 import { columns } from '@/components/transactions/columns';
 import { DataTable } from '@/components/transactions/data-table';
 import InfoCardsSection from '@/components/transactions/info-cards-section';
-import { FileDown, Upload } from 'lucide-react';
+import { UploadTransactionsDialog } from '@/components/dashboard/UploadTransactionsDialog';
+import { FileDown } from 'lucide-react';
 
 export default function Transactions() {
   return (
@@ -19,10 +20,7 @@ export default function Transactions() {
             <FileDown />
             Export
           </Button>
-          <Button className="w-full sm:w-auto">
-            <Upload />
-            Upload Transactions
-          </Button>
+          <UploadTransactionsDialog />
         </div>
       </div>
 

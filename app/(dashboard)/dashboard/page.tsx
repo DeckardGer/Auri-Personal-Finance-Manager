@@ -1,5 +1,3 @@
-// import { UploadTransactionsDialog } from '@/components/dashboard/UploadTransactionsDialog';
-
 import { getUser } from '@/lib/data';
 
 export default async function Dashboard() {

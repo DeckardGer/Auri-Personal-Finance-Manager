@@ -23,6 +23,7 @@ import { ShimmeringText } from '@/components/ui/shimmering-text';
 import type { FileWithPreview } from '@/hooks/use-file-upload';
 import uploadTransactionsIconLight from '@/public/Upload Transactions Icon Light.svg';
 import uploadTransactionsIconDark from '@/public/Upload Transactions Icon Dark.svg';
+import { Upload } from 'lucide-react';
 
 const { useStepper } = defineStepper(
   { id: 'step-1', step: 'Upload Transactions' },
@@ -72,7 +73,10 @@ export function UploadTransactionsDialog() {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline">Upload Transactions</Button>
+        <Button className="w-full sm:w-auto">
+          <Upload />
+          Upload Transactions
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px]">
         <div className="absolute w-full overflow-hidden p-0.5">
