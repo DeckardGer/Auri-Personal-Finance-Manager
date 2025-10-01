@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Home, ChartColumn, Receipt, Store, Tags, Settings, MessageCircle } from 'lucide-react';
+import { Home, ChartColumn, Receipt, Store, Tags } from 'lucide-react';
 import {
   Sidebar,
   SidebarHeader,
@@ -14,47 +14,33 @@ import { SidebarAppHeader } from '@/components/sidebar/SidebarAppHeader';
 import { SidebarMainNav } from '@/components/sidebar/SidebarMainNav';
 import { SidebarFooterNav } from '@/components/sidebar/SidebarFooterNav';
 
-const data = {
-  mainNav: [
-    {
-      title: 'Dashboard',
-      url: '/dashboard',
-      icon: Home,
-    },
-    {
-      title: 'Analytics',
-      url: '/analytics',
-      icon: ChartColumn,
-    },
-    {
-      title: 'Transactions',
-      url: '/transactions',
-      icon: Receipt,
-    },
-    {
-      title: 'Merchants',
-      url: '/merchants',
-      icon: Store,
-    },
-    {
-      title: 'Categories',
-      url: '/categories',
-      icon: Tags,
-    },
-  ],
-  footerNav: [
-    {
-      title: 'Feedback',
-      url: '/feedback',
-      icon: MessageCircle,
-    },
-    {
-      title: 'Settings',
-      url: '/settings',
-      icon: Settings,
-    },
-  ],
-};
+const mainNavItems = [
+  {
+    title: 'Dashboard',
+    url: '/dashboard',
+    icon: Home,
+  },
+  {
+    title: 'Analytics',
+    url: '/analytics',
+    icon: ChartColumn,
+  },
+  {
+    title: 'Transactions',
+    url: '/transactions',
+    icon: Receipt,
+  },
+  {
+    title: 'Merchants',
+    url: '/merchants',
+    icon: Store,
+  },
+  {
+    title: 'Categories',
+    url: '/categories',
+    icon: Tags,
+  },
+];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
@@ -65,10 +51,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarAppHeader />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarMainNav items={data.mainNav} />
+        <SidebarMainNav items={mainNavItems} />
       </SidebarContent>
       <SidebarFooter className="p-0">
-        <SidebarFooterNav items={data.footerNav} />
+        <SidebarFooterNav />
       </SidebarFooter>
       {state === 'collapsed' && <SidebarRail />}
     </Sidebar>
