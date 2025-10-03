@@ -46,6 +46,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const [rowSelection, setRowSelection] = useState({});
 
   const prevFiltersRef = useRef<string>('');
+  const prevSortingRef = useRef<string>('');
 
   useEffect(() => {
     const fetchDropdownData = async () => {
@@ -70,12 +71,17 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
 
   useEffect(() => {
     const currentFilters = JSON.stringify(columnFilters);
+    const currentSorting = JSON.stringify(sorting);
     const isFilterChange = currentFilters !== prevFiltersRef.current;
-    if (isFilterChange && pagination.pageIndex !== 0) {
+    const isSortingChange = currentSorting !== prevSortingRef.current;
+
+    if ((isFilterChange || isSortingChange) && pagination.pageIndex !== 0) {
       setPagination((prev) => ({ ...prev, pageIndex: 0 }));
       return;
     }
+
     prevFiltersRef.current = currentFilters;
+    prevSortingRef.current = currentSorting;
 
     console.log(currentFilters);
 
