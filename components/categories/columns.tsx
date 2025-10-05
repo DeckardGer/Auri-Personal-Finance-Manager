@@ -5,11 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { DataTableColumnSortHeader } from '@/components/data-table/data-table-column-sort-header';
 import { type SubcategoryWithDetails } from '@/types/categories';
-
-const currencyFormatter = new Intl.NumberFormat('en-AU', {
-  style: 'currency',
-  currency: 'AUD',
-});
+import { currencyFormatter } from '@/lib/currency';
 
 export const columns: ColumnDef<SubcategoryWithDetails>[] = [
   {

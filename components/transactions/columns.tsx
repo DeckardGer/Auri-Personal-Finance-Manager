@@ -6,11 +6,7 @@ import { DataTableColumnSortHeader } from '@/components/data-table/data-table-co
 import { DataTableColumnViewHeader } from '@/components/data-table/data-table-column-view-header';
 import { DataTableRowActions } from '@/components/data-table/data-table-row-actions';
 import { type Transaction } from '@/types/transactions';
-
-const currencyFormatter = new Intl.NumberFormat('en-AU', {
-  style: 'currency',
-  currency: 'AUD',
-});
+import { currencyFormatter } from '@/lib/currency';
 
 export const columns: ColumnDef<Transaction>[] = [
   {

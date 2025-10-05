@@ -3,12 +3,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { prisma } from '@/lib/prisma';
+import { currencyFormatter } from '@/lib/currency';
 import { ListChecks, Wallet, CalendarRange, Calculator, type LucideIcon } from 'lucide-react';
-
-const currencyFormatter = new Intl.NumberFormat('en-AU', {
-  style: 'currency',
-  currency: 'AUD',
-});
 
 async function TransactionCount() {
   const count = await prisma.transaction.count();

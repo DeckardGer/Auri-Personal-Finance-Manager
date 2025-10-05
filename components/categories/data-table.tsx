@@ -83,8 +83,6 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
     prevFiltersRef.current = currentFilters;
     prevSortingRef.current = currentSorting;
 
-    console.log(currentFilters);
-
     const fetchData = async () => {
       try {
         const sortBy = sorting[0]?.id ?? 'id';
