@@ -30,6 +30,20 @@ async function getMonthlyCashflowData() {
   // Group transactions by month and year
   const monthlyData = new Map();
 
+  // Create all months from the last year
+  for (let i = 0; i < 12; i++) {
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const key = `${year}-${month.toString().padStart(2, '0')}`;
+
+    monthlyData.set(key, {
+      month,
+      income: 0,
+      expenses: 0,
+    });
+  }
+
   transactions.forEach((transaction) => {
     const date = new Date(transaction.date);
     const year = date.getFullYear();
@@ -37,50 +51,23 @@ async function getMonthlyCashflowData() {
     const key = `${year}-${month.toString().padStart(2, '0')}`;
 
     if (!monthlyData.has(key)) {
-      monthlyData.set(key, {
-        year,
-        month,
-        income: 0,
-        expenses: 0,
-      });
+      console.error(`Month ${key} not found in monthlyData`);
+      return;
     }
 
     const data = monthlyData.get(key)!;
-    if (transaction.amount > 0) {
-      data.income += transaction.amount;
-    } else {
-      data.expenses += Math.abs(transaction.amount);
-    }
+
+    if (transaction.amount > 0) data.income += transaction.amount;
+    else data.expenses += Math.abs(transaction.amount);
   });
 
-  // Ensure all 12 months from the last year are included
-  for (let i = 0; i < 12; i++) {
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const key = `${year}-${month.toString().padStart(2, '0')}`;
-
-    if (!monthlyData.has(key)) {
-      monthlyData.set(key, {
-        year,
-        month,
-        income: 0,
-        expenses: 0,
-      });
-    }
-  }
-
-  // Convert to arrays and sort by year and month (newest first)
   const data = Array.from(monthlyData.values())
-    .sort((a, b) => {
-      if (a.year !== b.year) return a.year - b.year;
-      return a.month - b.month;
-    })
     .map((data) => ({
       month: monthIndexToString(data.month),
       income: data.income,
       expenses: data.expenses,
-    }));
+    }))
+    .reverse();
 
   const description = `${monthIndexToString(oneYearAgo.getMonth() + 1)} ${oneYearAgo.getFullYear()} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
 
@@ -113,47 +100,39 @@ async function getYearlyCashflowData() {
   // Group transactions by month and year
   const yearlyData = new Map();
 
+  // Create all years from the last 12 years
+  for (let i = 0; i < 12; i++) {
+    const year = currentDate.getFullYear() - i;
+
+    yearlyData.set(year, {
+      year,
+      income: 0,
+      expenses: 0,
+    });
+  }
+
   transactions.forEach((transaction) => {
     const date = new Date(transaction.date);
     const year = date.getFullYear();
 
     if (!yearlyData.has(year)) {
-      yearlyData.set(year, {
-        year,
-        income: 0,
-        expenses: 0,
-      });
+      console.error(`Year ${year} not found in yearlyData`);
+      return;
     }
 
     const data = yearlyData.get(year)!;
-    if (transaction.amount > 0) {
-      data.income += transaction.amount;
-    } else {
-      data.expenses += Math.abs(transaction.amount);
-    }
+
+    if (transaction.amount > 0) data.income += transaction.amount;
+    else data.expenses += Math.abs(transaction.amount);
   });
 
-  // Ensure all 12 years are included
-  for (let i = 0; i < 12; i++) {
-    const year = currentDate.getFullYear() - i;
-
-    if (!yearlyData.has(year)) {
-      yearlyData.set(year, {
-        year,
-        income: 0,
-        expenses: 0,
-      });
-    }
-  }
-
-  // Convert to arrays and sort by year (newest first)
   const data = Array.from(yearlyData.values())
-    .sort((a, b) => a.year - b.year)
     .map((data) => ({
       year: data.year,
       income: data.income,
       expenses: data.expenses,
-    }));
+    }))
+    .reverse();
 
   const description = `${twelveYearsAgo.getFullYear()} - ${currentDate.getFullYear()}`;
 

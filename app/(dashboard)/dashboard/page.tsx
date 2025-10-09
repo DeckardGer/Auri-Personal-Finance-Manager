@@ -5,7 +5,7 @@ import type { CashflowChartData } from '@/types/charts';
 
 const getCashflowData = (): Promise<CashflowChartData> => {
   const cashflowData = fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/dashboard-charts`
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/cashflow-chart`
   ).then((res) => res.json());
 
   return cashflowData;

@@ -18,8 +18,8 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import type { CashflowChartData } from '@/types/charts';
 import { currencyFormatterMinimal } from '@/lib/currency';
+import type { CashflowChartData } from '@/types/charts';
 import { Calendar } from 'lucide-react';
 
 const chartConfig = {
