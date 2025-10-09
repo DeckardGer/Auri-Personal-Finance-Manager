@@ -16,3 +16,20 @@ export type CashflowChartData = {
     description: string;
   };
 };
+
+export type BalanceChartData = {
+  weekly: {
+    chartData: {
+      date: string;
+      balance: number;
+    }[];
+    description: string;
+  };
+  monthly: {
+    chartData: {
+      date: string;
+      balance: number;
+    }[];
+    description: string;
+  };
+};

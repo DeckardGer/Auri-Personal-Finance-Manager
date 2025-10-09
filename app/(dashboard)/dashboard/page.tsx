@@ -1,7 +1,8 @@
 import { Suspense } from 'react';
 import { CashflowChart } from '@/components/charts/CashflowChart';
+import { BalanceChart } from '@/components/charts/BalanceChart';
 import { getUser } from '@/lib/data';
-import type { CashflowChartData } from '@/types/charts';
+import type { CashflowChartData, BalanceChartData } from '@/types/charts';
 
 const getCashflowData = (): Promise<CashflowChartData> => {
   const cashflowData = fetch(
@@ -11,10 +12,19 @@ const getCashflowData = (): Promise<CashflowChartData> => {
   return cashflowData;
 };
 
+const getBalanceData = (): Promise<BalanceChartData> => {
+  const balanceData = fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/balance-chart`
+  ).then((res) => res.json());
+
+  return balanceData;
+};
+
 export default async function Dashboard() {
   const user = await getUser();
 
   const cashflowData = getCashflowData();
+  const balanceData = getBalanceData();
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -32,6 +42,11 @@ export default async function Dashboard() {
       <div className="max-w-1/2">
         <Suspense fallback={<div>Loading...</div>}>
           <CashflowChart chartData={cashflowData} />
+        </Suspense>
+      </div>
+      <div className="max-w-1/2">
+        <Suspense fallback={<div>Loading...</div>}>
+          <BalanceChart chartData={balanceData} />
         </Suspense>
       </div>
     </div>
