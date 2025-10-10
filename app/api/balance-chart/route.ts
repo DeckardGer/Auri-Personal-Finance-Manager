@@ -3,9 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { BalanceChartData } from '@/types/charts';
 
 const WEEKS = 52;
+const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
 
-const getYearAgoDate = () => {
-  const date = new Date();
+const getYearAgoDate = (currentDate: Date) => {
+  const date = new Date(currentDate);
   date.setDate(date.getDate() - 7 * WEEKS);
 
   const dayOfWeek = date.getDay();
@@ -18,9 +19,9 @@ const getYearAgoDate = () => {
 async function getWeeklyBalanceData() {
   // Get current date and date 52 weeks ago
   const currentDate = new Date();
-  const oneYearAgo = getYearAgoDate();
+  const oneYearAgo = getYearAgoDate(currentDate);
 
-  // TODO: Change to column property
+  // TODO: Save current balance as a property associated with the user. Update as required
   const totalBalance = await prisma.transaction.aggregate({
     _sum: {
       amount: true,
@@ -44,6 +45,13 @@ async function getWeeklyBalanceData() {
     },
   });
 
+  if (!transactions.length) {
+    return {
+      data: [],
+      description: 'Weekly Balance',
+    };
+  }
+
   // Group transactions by week and calculate weekly totals
   const weeklyData = new Map();
 
@@ -53,17 +61,27 @@ async function getWeeklyBalanceData() {
     balance: totalBalance._sum.amount,
   });
 
-  // Get currentDate's latest monday start date
+  const lastTransactionDate = transactions[transactions.length - 1].date;
+  const transactionLastMonday = new Date(lastTransactionDate);
+  const transactionDaysFromMonday = (transactionLastMonday.getDay() + 6) % 7;
+  transactionLastMonday.setDate(transactionLastMonday.getDate() - transactionDaysFromMonday);
+  transactionLastMonday.setHours(0, 0, 0, 0);
+
+  const weeksDiff = Math.max(
+    0,
+    Math.floor((transactionLastMonday.getTime() - oneYearAgo.getTime()) / MS_PER_WEEK)
+  );
+
+  // Get currentDate's previous monday start date
   const lastMonday = new Date(currentDate);
-  const dayOfWeek = lastMonday.getDay();
-  const daysToMonday = (dayOfWeek + 6) % 7 || 7;
-  lastMonday.setDate(lastMonday.getDate() - daysToMonday);
+  const daysFromMonday = (lastMonday.getDay() + 6) % 7;
+  lastMonday.setDate(lastMonday.getDate() - daysFromMonday);
   lastMonday.setHours(0, 0, 0, 0);
 
   let currentBalance = totalBalance._sum.amount || 0;
   let transactionIndex = 0;
 
-  for (let i = 0; i < WEEKS; i++) {
+  for (let i = 0; i < WEEKS - weeksDiff; i++) {
     const weekStart = new Date(
       lastMonday.getFullYear(),
       lastMonday.getMonth(),
@@ -94,7 +112,7 @@ async function getWeeklyBalanceData() {
     // Set balance for this week (current balance minus this week's transactions)
     const year = weekStart.getFullYear();
     const month = weekStart.getMonth() + 1;
-    const day = weekStart.getDate() - 1;
+    const day = weekStart.getDate();
     const key = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
     if (!weeklyData.has(key)) {
@@ -118,8 +136,122 @@ async function getWeeklyBalanceData() {
 }
 
 async function getMonthlyBalanceData() {
-  // Placeholder for monthly balance data implementation
-  return { data: [], description: '' };
+  // Get current date and date 12 years ago
+  const currentDate = new Date();
+  const twelveYearsAgo = new Date(currentDate.getFullYear() - 12, currentDate.getMonth() + 1, 1);
+  twelveYearsAgo.setDate(1);
+  twelveYearsAgo.setHours(0, 0, 0, 0);
+
+  // TODO: Save current balance as a property associated with the user. Update as required
+  const totalBalance = await prisma.transaction.aggregate({
+    _sum: {
+      amount: true,
+    },
+  });
+
+  // Fetch all transactions from the last 12 years
+  const transactions = await prisma.transaction.findMany({
+    where: {
+      date: {
+        gte: twelveYearsAgo,
+        lte: currentDate,
+      },
+    },
+    select: {
+      amount: true,
+      date: true,
+    },
+    orderBy: {
+      date: 'desc',
+    },
+  });
+
+  if (!transactions.length) {
+    return {
+      data: [],
+      description: 'Monthly Balance',
+    };
+  }
+
+  // Group transactions by month and calculate monthly totals
+  const monthlyData = new Map();
+
+  const todayKey = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
+  monthlyData.set(todayKey, {
+    date: todayKey,
+    balance: totalBalance._sum.amount,
+  });
+
+  const lastTransactionDate = transactions[transactions.length - 1].date;
+  const transactionMonthStart = new Date(lastTransactionDate);
+  transactionMonthStart.setDate(1);
+  transactionMonthStart.setHours(0, 0, 0, 0);
+
+  const monthsDiff = Math.max(
+    0,
+    (transactionMonthStart.getFullYear() - twelveYearsAgo.getFullYear()) * 12 +
+      (transactionMonthStart.getMonth() - twelveYearsAgo.getMonth())
+  );
+
+  // Get currentDate's latest month start date
+  const monthStartDate = new Date(currentDate);
+  monthStartDate.setDate(1);
+  monthStartDate.setHours(0, 0, 0, 0);
+
+  let currentBalance = totalBalance._sum.amount || 0;
+  let transactionIndex = 0;
+
+  for (let i = 0; i < 144 - monthsDiff; i++) {
+    const monthStart = new Date(
+      monthStartDate.getFullYear(),
+      monthStartDate.getMonth() - i,
+      monthStartDate.getDate()
+    );
+
+    const monthEnd = new Date(monthStart);
+    monthEnd.setMonth(monthEnd.getMonth() + 1);
+    monthEnd.setMilliseconds(-1);
+
+    // Calculate total amount for this month using index tracking
+    let monthTotal = 0;
+    while (transactionIndex < transactions.length) {
+      const transaction = transactions[transactionIndex];
+      const transactionDate = new Date(transaction.date);
+
+      // If transaction is before or after this month, break
+      if (transactionDate < monthStart || transactionDate > monthEnd) {
+        break;
+      }
+
+      monthTotal += transaction.amount;
+      transactionIndex++;
+    }
+
+    currentBalance -= monthTotal;
+
+    // Set balance for this month (current balance minus this month's transactions)
+    const year = monthStart.getFullYear();
+    const month = monthStart.getMonth() + 1;
+    const key = `${year}-${month.toString().padStart(2, '0')}-01`;
+
+    if (!monthlyData.has(key)) {
+      monthlyData.set(key, {
+        date: key,
+        balance: currentBalance,
+      });
+    }
+  }
+
+  const data = Array.from(monthlyData.values())
+    .map((data) => ({
+      date: data.date,
+      balance: data.balance,
+    }))
+    .reverse();
+
+  const description = 'Monthly Balance';
+
+  return { data, description };
 }
 
 export async function GET() {

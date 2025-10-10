@@ -7,7 +7,6 @@ async function getMonthlyCashflowData() {
   // Get current date to determine the date range for the last 12 months
   const currentDate = new Date();
   const oneYearAgo = new Date(currentDate.getFullYear() - 1, currentDate.getMonth() + 1, 1);
-  oneYearAgo.setDate(1);
   oneYearAgo.setHours(0, 0, 0, 0);
 
   // Fetch all transactions from the last year

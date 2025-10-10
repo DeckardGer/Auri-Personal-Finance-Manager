@@ -37,9 +37,9 @@ export function BalanceChart({ chartData }: { chartData: Promise<BalanceChartDat
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Line Chart</CardTitle>
+        <CardTitle>Balance Over Time</CardTitle>
         <CardDescription>
-          {isWeekly ? data.weekly.description : data.weekly.description}
+          {isWeekly ? data.weekly.description : data.monthly.description}
         </CardDescription>
         <CardAction>
           <Tooltip>
@@ -70,8 +70,7 @@ export function BalanceChart({ chartData }: { chartData: Promise<BalanceChartDat
               tickFormatter={(value) => {
                 const date = new Date(value);
                 return date.toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
+                  ...(isWeekly ? { month: 'short', day: 'numeric' } : { year: 'numeric' }),
                 });
               }}
             />
@@ -89,6 +88,7 @@ export function BalanceChart({ chartData }: { chartData: Promise<BalanceChartDat
               stroke="var(--color-balance)"
               strokeWidth={2}
               dot={false}
+              animationDuration={500}
             />
           </LineChart>
         </ChartContainer>
