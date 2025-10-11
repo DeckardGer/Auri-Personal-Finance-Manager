@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { monthIndexToString } from '@/lib/date';
 import { BalanceChartData } from '@/types/charts';
 
 const WEEKS = 52;
@@ -53,12 +54,12 @@ async function getWeeklyBalanceData() {
   }
 
   // Group transactions by week and calculate weekly totals
-  const weeklyData = new Map();
+  const weeklyData = new Map<string, { date: string; balance: number }>();
 
   const todayKey = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
   weeklyData.set(todayKey, {
     date: todayKey,
-    balance: totalBalance._sum.amount,
+    balance: totalBalance._sum.amount!, // TODO: Replace
   });
 
   const lastTransactionDate = transactions[transactions.length - 1].date;
@@ -130,7 +131,9 @@ async function getWeeklyBalanceData() {
     }))
     .reverse();
 
-  const description = 'Weekly Balance';
+  const startPeriodDate = new Date(oneYearAgo);
+  startPeriodDate.setDate(startPeriodDate.getDate() + weeksDiff * 7);
+  const description = `${monthIndexToString(startPeriodDate.getMonth() + 1)} ${startPeriodDate.getFullYear()} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
 
   return { data, description };
 }
@@ -174,23 +177,20 @@ async function getMonthlyBalanceData() {
   }
 
   // Group transactions by month and calculate monthly totals
-  const monthlyData = new Map();
+  const monthlyData = new Map<string, { date: string; balance: number }>();
 
   const todayKey = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
   monthlyData.set(todayKey, {
     date: todayKey,
-    balance: totalBalance._sum.amount,
+    balance: totalBalance._sum.amount!, // TODO: Replace
   });
 
   const lastTransactionDate = transactions[transactions.length - 1].date;
-  const transactionMonthStart = new Date(lastTransactionDate);
-  transactionMonthStart.setDate(1);
-  transactionMonthStart.setHours(0, 0, 0, 0);
 
   const monthsDiff = Math.max(
     0,
-    (transactionMonthStart.getFullYear() - twelveYearsAgo.getFullYear()) * 12 +
-      (transactionMonthStart.getMonth() - twelveYearsAgo.getMonth())
+    (lastTransactionDate.getFullYear() - twelveYearsAgo.getFullYear()) * 12 +
+      (lastTransactionDate.getMonth() - twelveYearsAgo.getMonth())
   );
 
   // Get currentDate's latest month start date
@@ -249,7 +249,7 @@ async function getMonthlyBalanceData() {
     }))
     .reverse();
 
-  const description = 'Monthly Balance';
+  const description = `${monthIndexToString(twelveYearsAgo.getMonth() + 1 + monthsDiff)} ${twelveYearsAgo.getFullYear() + Math.floor((twelveYearsAgo.getMonth() + monthsDiff) / 12)} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
 
   return { data, description };
 }

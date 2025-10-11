@@ -13,4 +13,4 @@ const MONTH_NAMES = [
   'December',
 ];
 
-export const monthIndexToString = (monthIndex: number) => MONTH_NAMES[monthIndex - 1];
+export const monthIndexToString = (monthIndex: number) => MONTH_NAMES[(monthIndex - 1 + 12) % 12];

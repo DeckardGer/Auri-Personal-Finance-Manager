@@ -9,7 +9,7 @@ export type CashflowChartData = {
   };
   yearly: {
     chartData: {
-      year: string;
+      year: number;
       income: number;
       expenses: number;
     }[];

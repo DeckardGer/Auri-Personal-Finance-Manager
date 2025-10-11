@@ -27,10 +27,17 @@ async function getMonthlyCashflowData() {
   });
 
   // Group transactions by month and year
-  const monthlyData = new Map();
+  const monthlyData = new Map<string, { month: number; income: number; expenses: number }>();
+
+  const lastTransactionDate = transactions[transactions.length - 1].date;
+  const monthsDiff = Math.max(
+    0,
+    (lastTransactionDate.getFullYear() - oneYearAgo.getFullYear()) * 12 +
+      (lastTransactionDate.getMonth() - oneYearAgo.getMonth())
+  );
 
   // Create all months from the last year
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 12 - monthsDiff; i++) {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -68,7 +75,7 @@ async function getMonthlyCashflowData() {
     }))
     .reverse();
 
-  const description = `${monthIndexToString(oneYearAgo.getMonth() + 1)} ${oneYearAgo.getFullYear()} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
+  const description = `${monthIndexToString(oneYearAgo.getMonth() + 1 + monthsDiff)} ${oneYearAgo.getFullYear() + Math.floor((oneYearAgo.getMonth() + monthsDiff) / 12)} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
 
   return { data, description };
 }
@@ -97,10 +104,13 @@ async function getYearlyCashflowData() {
   });
 
   // Group transactions by month and year
-  const yearlyData = new Map();
+  const yearlyData = new Map<number, { year: number; income: number; expenses: number }>();
+
+  const lastTransactionDate = transactions[transactions.length - 1].date;
+  const yearsDiff = Math.max(0, lastTransactionDate.getFullYear() - twelveYearsAgo.getFullYear());
 
   // Create all years from the last 12 years
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 12 - yearsDiff; i++) {
     const year = currentDate.getFullYear() - i;
 
     yearlyData.set(year, {
@@ -133,7 +143,7 @@ async function getYearlyCashflowData() {
     }))
     .reverse();
 
-  const description = `${twelveYearsAgo.getFullYear()} - ${currentDate.getFullYear()}`;
+  const description = `${twelveYearsAgo.getFullYear() + yearsDiff} - ${currentDate.getFullYear()}`;
 
   return { data, description };
 }

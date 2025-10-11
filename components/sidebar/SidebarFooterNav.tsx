@@ -34,7 +34,7 @@ export function SidebarFooterNav() {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
+                <SidebarMenuButton tooltip="Feedback">
                   <MessageCircle />
                   Feedback
                 </SidebarMenuButton>
