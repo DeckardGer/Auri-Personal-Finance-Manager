@@ -120,7 +120,7 @@
   --destructive: oklch(0.7086 0.1699 26.47); /* Destructive */
   --success: oklch(0.7585 0.1527 157.18); /* Success */
   --border: var(--dark-grey-800); /* Border */
-  --input: var(--dark-grey-700); /* Input */
+  --input: var(--dark-grey-800); /* Input */
   --ring: oklch(0.6595 0.1717 296.66); /* Ring */
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);

@@ -1,5 +1,7 @@
 import type { Category, Merchant, Subcategory } from '@prisma/client';
 
+// Uploading Transactions
+
 // Simple transaction from DB
 export type SimpleTransaction = {
   id: number;
@@ -33,6 +35,10 @@ export type UploadTransaction = {
   subcategoryId?: number;
 };
 
+// - - - - - - - - - - - - - - - - - - - -
+
+// DB Transaction
+
 export type Transaction = {
   id: number;
   date: Date;
@@ -41,4 +47,20 @@ export type Transaction = {
   merchant: Merchant | null;
   category: Category | null;
   subcategory: Subcategory | null;
+};
+
+export type TransactionWithMinimal = {
+  id: number;
+  date: Date;
+  amount: number;
+  description: string;
+  merchant: {
+    name: string;
+  } | null;
+  category: {
+    name: string;
+  } | null;
+  subcategory: {
+    name: string;
+  } | null;
 };

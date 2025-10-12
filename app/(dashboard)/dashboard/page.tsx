@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
 import { CashflowChart } from '@/components/charts/CashflowChart';
 import { BalanceChart } from '@/components/charts/BalanceChart';
+import { RecentTransactions } from '@/components/charts/RecentTransactions';
 import { getUser } from '@/lib/data';
-import type { CashflowChartData, BalanceChartData } from '@/types/charts';
+import type { CashflowChartData, BalanceChartData, RecentTransactionsData } from '@/types/charts';
 
 const getCashflowData = (): Promise<CashflowChartData> => {
   const cashflowData = fetch(
@@ -20,11 +21,20 @@ const getBalanceData = (): Promise<BalanceChartData> => {
   return balanceData;
 };
 
+const getRecentTransactions = (): Promise<RecentTransactionsData> => {
+  const recentTransactions = fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/recent-transactions`
+  ).then((res) => res.json());
+
+  return recentTransactions;
+};
+
 export default async function Dashboard() {
   const user = await getUser();
 
   const cashflowData = getCashflowData();
   const balanceData = getBalanceData();
+  const recentTransactionsData = getRecentTransactions();
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -47,6 +57,11 @@ export default async function Dashboard() {
       <div className="max-w-1/2">
         <Suspense fallback={<div>Loading...</div>}>
           <BalanceChart chartData={balanceData} />
+        </Suspense>
+      </div>
+      <div className="max-w-1/3">
+        <Suspense fallback={<div>Loading...</div>}>
+          <RecentTransactions recentTransactionsData={recentTransactionsData} />
         </Suspense>
       </div>
     </div>

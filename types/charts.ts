@@ -1,3 +1,5 @@
+import type { TransactionWithMinimal } from '@/types/transactions';
+
 export type CashflowChartData = {
   monthly: {
     chartData: {
@@ -32,4 +34,10 @@ export type BalanceChartData = {
     }[];
     description: string;
   };
+};
+
+export type RecentTransactionsData = {
+  recentTransactions: TransactionWithMinimal[];
+  recentIncomes: TransactionWithMinimal[];
+  recentExpenses: TransactionWithMinimal[];
 };
