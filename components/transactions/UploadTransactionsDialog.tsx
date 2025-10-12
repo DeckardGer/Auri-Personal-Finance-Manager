@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { TransactionsFileUpload } from '@/components/dashboard/TransactionsFileUpload';
+import { TransactionsFileUpload } from '@/components/transactions/TransactionsFileUpload';
 import { preProcessTransactions, processTransactions } from '@/actions/transactions';
 import { FlickeringGrid } from '@/components/ui/flickering-grid';
 import { defineStepper } from '@/components/ui/stepper';

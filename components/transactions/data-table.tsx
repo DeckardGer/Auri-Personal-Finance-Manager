@@ -20,6 +20,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { DataTableToolbar } from '@/components/transactions/data-table-toolbar';
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
+import { useExportTransactionsStore } from '@/stores/useExportTransactionsStore';
 import { Merchant } from '@/types/merchants';
 import { Category } from '@/types/categories';
 
@@ -33,6 +34,10 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Zustand store
+  const { setColumnFilters: setStoreFilters, setSorting: setStoreSorting } =
+    useExportTransactionsStore();
 
   // server state
   const [pagination, setPagination] = useState({
@@ -134,8 +139,16 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onSortingChange: (updater) => {
+      setSorting(updater);
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater;
+      setStoreSorting(newSorting);
+    },
+    onColumnFiltersChange: (updater) => {
+      setColumnFilters(updater);
+      const newFilters = typeof updater === 'function' ? updater(columnFilters) : updater;
+      setStoreFilters(newFilters);
+    },
     onPaginationChange: setPagination,
     pageCount: Math.ceil(total / pagination.pageSize),
     manualPagination: true,

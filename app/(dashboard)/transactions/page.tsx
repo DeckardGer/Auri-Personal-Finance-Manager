@@ -1,9 +1,8 @@
-import { Button } from '@/components/ui/button';
 import { columns } from '@/components/transactions/columns';
 import { DataTable } from '@/components/transactions/data-table';
 import InfoCardsSection from '@/components/transactions/info-cards-section';
-import { UploadTransactionsDialog } from '@/components/dashboard/UploadTransactionsDialog';
-import { FileDown } from 'lucide-react';
+import { UploadTransactionsDialog } from '@/components/transactions/UploadTransactionsDialog';
+import { ExportButton } from '@/components/transactions/ExportButton';
 
 export default function Transactions() {
   return (
@@ -16,10 +15,7 @@ export default function Transactions() {
           </p>
         </div>
         <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:gap-2">
-          <Button variant="outline" className="w-full sm:w-auto">
-            <FileDown />
-            Export
-          </Button>
+          <ExportButton />
           <UploadTransactionsDialog />
         </div>
       </div>
