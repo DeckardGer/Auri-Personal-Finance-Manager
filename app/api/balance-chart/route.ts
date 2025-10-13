@@ -139,11 +139,11 @@ async function getWeeklyBalanceData() {
 }
 
 async function getMonthlyBalanceData() {
-  // Get current date and date 12 years ago
+  // Get current date and date 10 years ago
   const currentDate = new Date();
-  const twelveYearsAgo = new Date(currentDate.getFullYear() - 12, currentDate.getMonth() + 1, 1);
-  twelveYearsAgo.setDate(1);
-  twelveYearsAgo.setHours(0, 0, 0, 0);
+  const tenYearsAgo = new Date(currentDate.getFullYear() - 10, currentDate.getMonth() + 1, 1);
+  tenYearsAgo.setDate(1);
+  tenYearsAgo.setHours(0, 0, 0, 0);
 
   // TODO: Save current balance as a property associated with the user. Update as required
   const totalBalance = await prisma.transaction.aggregate({
@@ -152,11 +152,11 @@ async function getMonthlyBalanceData() {
     },
   });
 
-  // Fetch all transactions from the last 12 years
+  // Fetch all transactions from the last 10 years
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
-        gte: twelveYearsAgo,
+        gte: tenYearsAgo,
         lte: currentDate,
       },
     },
@@ -189,8 +189,8 @@ async function getMonthlyBalanceData() {
 
   const monthsDiff = Math.max(
     0,
-    (lastTransactionDate.getFullYear() - twelveYearsAgo.getFullYear()) * 12 +
-      (lastTransactionDate.getMonth() - twelveYearsAgo.getMonth())
+    (lastTransactionDate.getFullYear() - tenYearsAgo.getFullYear()) * 12 +
+      (lastTransactionDate.getMonth() - tenYearsAgo.getMonth())
   );
 
   // Get currentDate's latest month start date
@@ -201,7 +201,7 @@ async function getMonthlyBalanceData() {
   let currentBalance = totalBalance._sum.amount || 0;
   let transactionIndex = 0;
 
-  for (let i = 0; i < 144 - monthsDiff; i++) {
+  for (let i = 0; i < 120 - monthsDiff; i++) {
     const monthStart = new Date(
       monthStartDate.getFullYear(),
       monthStartDate.getMonth() - i,
@@ -249,7 +249,7 @@ async function getMonthlyBalanceData() {
     }))
     .reverse();
 
-  const description = `${monthIndexToString(twelveYearsAgo.getMonth() + 1 + monthsDiff)} ${twelveYearsAgo.getFullYear() + Math.floor((twelveYearsAgo.getMonth() + monthsDiff) / 12)} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
+  const description = `${monthIndexToString(tenYearsAgo.getMonth() + 1 + monthsDiff)} ${tenYearsAgo.getFullYear() + Math.floor((tenYearsAgo.getMonth() + monthsDiff) / 12)} - ${monthIndexToString(currentDate.getMonth() + 1)} ${currentDate.getFullYear()}`;
 
   return { data, description };
 }

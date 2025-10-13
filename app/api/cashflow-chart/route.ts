@@ -81,16 +81,16 @@ async function getMonthlyCashflowData() {
 }
 
 async function getYearlyCashflowData() {
-  // Get current date to determine the date range for the last 12 years
+  // Get current date to determine the date range for the last 10 years
   const currentDate = new Date();
-  const twelveYearsAgo = new Date(currentDate.getFullYear() - 11, 0, 1); // January 1st of 12 years ago
-  twelveYearsAgo.setHours(0, 0, 0, 0);
+  const tenYearsAgo = new Date(currentDate.getFullYear() - 9, 0, 1); // January 1st of 10 years ago
+  tenYearsAgo.setHours(0, 0, 0, 0);
 
-  // Fetch all transactions from the last 12 years
+  // Fetch all transactions from the last 10 years
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
-        gte: twelveYearsAgo,
+        gte: tenYearsAgo,
         lte: currentDate,
       },
     },
@@ -107,10 +107,10 @@ async function getYearlyCashflowData() {
   const yearlyData = new Map<number, { year: number; income: number; expenses: number }>();
 
   const lastTransactionDate = transactions[transactions.length - 1].date;
-  const yearsDiff = Math.max(0, lastTransactionDate.getFullYear() - twelveYearsAgo.getFullYear());
+  const yearsDiff = Math.max(0, lastTransactionDate.getFullYear() - tenYearsAgo.getFullYear());
 
-  // Create all years from the last 12 years
-  for (let i = 0; i < 12 - yearsDiff; i++) {
+  // Create all years from the last 10 years
+  for (let i = 0; i < 10 - yearsDiff; i++) {
     const year = currentDate.getFullYear() - i;
 
     yearlyData.set(year, {
@@ -143,7 +143,7 @@ async function getYearlyCashflowData() {
     }))
     .reverse();
 
-  const description = `${twelveYearsAgo.getFullYear() + yearsDiff} - ${currentDate.getFullYear()}`;
+  const description = `${tenYearsAgo.getFullYear() + yearsDiff} - ${currentDate.getFullYear()}`;
 
   return { data, description };
 }
