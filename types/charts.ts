@@ -41,3 +41,24 @@ export type RecentTransactionsData = {
   recentIncomes: TransactionWithMinimal[];
   recentExpenses: TransactionWithMinimal[];
 };
+
+export type CategoryAmountChartData = {
+  year: {
+    chartData: {
+      category: string;
+      percentage: number;
+      amount: number;
+      count: number;
+    }[];
+    description: string;
+  };
+  decade: {
+    chartData: {
+      category: string;
+      percentage: number;
+      amount: number;
+      count: number;
+    }[];
+    description: string;
+  };
+};

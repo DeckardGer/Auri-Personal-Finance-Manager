@@ -2,8 +2,14 @@ import { Suspense } from 'react';
 import { CashflowChart } from '@/components/charts/CashflowChart';
 import { BalanceChart } from '@/components/charts/BalanceChart';
 import { RecentTransactions } from '@/components/charts/RecentTransactions';
+import { CategoryPercentageChart } from '@/components/charts/CategoryPercentageChart';
 import { getUser } from '@/lib/data';
-import type { CashflowChartData, BalanceChartData, RecentTransactionsData } from '@/types/charts';
+import type {
+  CashflowChartData,
+  BalanceChartData,
+  RecentTransactionsData,
+  CategoryAmountChartData,
+} from '@/types/charts';
 
 const getCashflowData = (): Promise<CashflowChartData> => {
   const cashflowData = fetch(
@@ -29,12 +35,21 @@ const getRecentTransactions = (): Promise<RecentTransactionsData> => {
   return recentTransactions;
 };
 
+const getCategoryAmounts = (): Promise<CategoryAmountChartData> => {
+  const categoryAmounts = fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/category-amounts`
+  ).then((res) => res.json());
+
+  return categoryAmounts;
+};
+
 export default async function Dashboard() {
   const user = await getUser();
 
   const cashflowData = getCashflowData();
   const balanceData = getBalanceData();
   const recentTransactionsData = getRecentTransactions();
+  const categoryAmountsData = getCategoryAmounts();
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -49,6 +64,11 @@ export default async function Dashboard() {
         </div>
       </div>
 
+      <div className="max-w-1/2">
+        <Suspense fallback={<div>Loading...</div>}>
+          <CategoryPercentageChart chartData={categoryAmountsData} />
+        </Suspense>
+      </div>
       <div className="max-w-1/2">
         <Suspense fallback={<div>Loading...</div>}>
           <CashflowChart chartData={cashflowData} />
