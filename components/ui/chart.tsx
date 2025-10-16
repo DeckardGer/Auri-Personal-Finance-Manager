@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import * as RechartsPrimitive from 'recharts';
-import type { ValueType } from 'recharts/types/component/DefaultTooltipContent';
+import type { ValueType, Payload } from 'recharts/types/component/DefaultTooltipContent';
 
 import { cn } from '@/lib/utils';
 
@@ -119,7 +119,7 @@ function ChartTooltipContent({
     indicator?: 'line' | 'dot' | 'dashed';
     nameKey?: string;
     labelKey?: string;
-    valueFormatter?: (value: ValueType) => string;
+    valueFormatter?: (value: ValueType, payload?: Payload<ValueType, string>) => string;
   }) {
   const { config } = useChart();
 
@@ -222,7 +222,7 @@ function ChartTooltipContent({
                       {item.value && (
                         <span className="font-mono font-medium text-foreground tabular-nums">
                           {valueFormatter
-                            ? valueFormatter(item.value)
+                            ? valueFormatter(item.value, item.payload)
                             : item.value.toLocaleString()}
                         </span>
                       )}

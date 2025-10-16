@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useState } from 'react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, XAxis, ReferenceLine } from 'recharts';
 import {
   Card,
   CardContent,
@@ -82,6 +82,7 @@ export function BalanceChart({ chartData }: { chartData: Promise<BalanceChartDat
                 />
               }
             />
+            <ReferenceLine y={0} stroke="var(--muted-foreground)" />
             <Line
               dataKey="balance"
               type="natural"

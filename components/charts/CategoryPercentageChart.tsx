@@ -1,7 +1,9 @@
 'use client';
 
 import { use, useState } from 'react';
+import { useTheme } from 'next-themes';
 import { Pie, PieChart } from 'recharts';
+import type { Payload, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import {
   Card,
   CardContent,
@@ -17,12 +19,21 @@ import { currencyFormatterMinimal } from '@/lib/currency';
 import { CategoryAmountChartData } from '@/types/charts';
 import { Calendar } from 'lucide-react';
 
-const generateChartColors = (total: number, index: number): string => {
-  const baseHue = 220;
-  const baseSaturation = 75;
+interface ExtendedPayload extends Payload<ValueType, string> {
+  percentage?: number;
+}
 
-  const lightnessRange = 50;
-  const lightness = 25 + (index / Math.max(1, total - 1)) * lightnessRange;
+const generateChartColors = (total: number, index: number, theme: string | undefined): string => {
+  let baseHue = 259.83;
+  let baseSaturation = 77;
+
+  if (theme === 'light') {
+    baseHue = 258.78;
+    baseSaturation = 63;
+  }
+
+  const lightnessRange = 40;
+  const lightness = 60 + (index / Math.max(1, total - 1)) * lightnessRange;
 
   return `hsl(${baseHue}, ${baseSaturation}%, ${Math.max(20, Math.min(80, lightness))}%)`;
 };
@@ -32,6 +43,8 @@ export function CategoryPercentageChart({
 }: {
   chartData: Promise<CategoryAmountChartData>;
 }) {
+  const { theme } = useTheme();
+
   const data = use(chartData);
 
   const [isYearly, setIsYearly] = useState(true);
@@ -40,13 +53,13 @@ export function CategoryPercentageChart({
     year: {
       chartData: data.year.chartData.map((item, index) => ({
         ...item,
-        fill: generateChartColors(data.year.chartData.length, index),
+        fill: generateChartColors(data.year.chartData.length, index, theme),
       })),
     },
     decade: {
       chartData: data.decade.chartData.map((item, index) => ({
         ...item,
-        fill: generateChartColors(data.decade.chartData.length, index),
+        fill: generateChartColors(data.decade.chartData.length, index, theme),
       })),
     },
   };
@@ -79,7 +92,9 @@ export function CategoryPercentageChart({
               content={
                 <ChartTooltipContent
                   hideLabel
-                  valueFormatter={(value) => `${currencyFormatterMinimal.format(value as number)}`}
+                  valueFormatter={(value, payload) =>
+                    `${currencyFormatterMinimal.format(value as number)} - ${(payload as ExtendedPayload).percentage!.toFixed(1)}%`
+                  }
                 />
               }
             />

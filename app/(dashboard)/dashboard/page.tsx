@@ -48,42 +48,24 @@ const getCategoryAmounts = (): Promise<CategoryAmountChartData> => {
 };
 
 const getCurrentBalance = (): Promise<CardData> => {
-  return new Promise((resolve) => {
-    resolve({
-      value: 500000000000,
-      percentage: 20,
-    });
-  });
   const currentBalance = fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/current-balance-card`
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/balance-card`
   ).then((res) => res.json());
 
   return currentBalance;
 };
 
 const getMonthlyIncome = (): Promise<CardData> => {
-  return new Promise((resolve) => {
-    resolve({
-      value: 500,
-      percentage: 20,
-    });
-  });
   const monthlyIncome = fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/monthly-income-card`
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/income-card`
   ).then((res) => res.json());
 
   return monthlyIncome;
 };
 
 const getMonthlyExpenses = (): Promise<CardData> => {
-  return new Promise((resolve) => {
-    resolve({
-      value: 500,
-      percentage: -20,
-    });
-  });
   const monthlyExpenses = fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/monthly-expenses-card`
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/expenses-card`
   ).then((res) => res.json());
 
   return monthlyExpenses;

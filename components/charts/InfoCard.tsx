@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/com
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { CardData } from '@/types/charts';
 import { cn } from '@/lib/utils';
+import { currencyFormatter } from '@/lib/currency';
 import { ArrowUp, ArrowDown, type LucideIcon } from 'lucide-react';
 
 type InfoCardProps = {
@@ -15,7 +16,7 @@ type InfoCardProps = {
 export function InfoCard(info: InfoCardProps) {
   const data = use(info.data);
 
-  const positive = data.percentage && data.percentage > 0;
+  const positive = data.percentage !== undefined && data.percentage >= 0;
 
   return (
     <Card className="flex-1 gap-1 overflow-hidden bg-gradient-to-tr from-background to-muted/30 py-4">
@@ -26,9 +27,9 @@ export function InfoCard(info: InfoCardProps) {
         <div className="flex items-end justify-between gap-2">
           <div className="flex gap-2 truncate">
             <CardDescription className="truncate text-2xl font-semibold text-foreground">
-              {data.value}
+              {currencyFormatter.format(data.value)}
             </CardDescription>
-            {data.percentage && (
+            {data.percentage !== undefined && (
               <div
                 className={cn(
                   'font-sm inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full px-2 py-0.5 text-xs whitespace-nowrap',
