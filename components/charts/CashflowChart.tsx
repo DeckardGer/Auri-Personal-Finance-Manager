@@ -39,7 +39,7 @@ export function CashflowChart({ chartData }: { chartData: Promise<CashflowChartD
   const [isMonthly, setIsMonthly] = useState(true);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Income vs Expenses</CardTitle>
         <CardDescription>
@@ -58,8 +58,8 @@ export function CashflowChart({ chartData }: { chartData: Promise<CashflowChartD
           </Tooltip>
         </CardAction>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent className="flex-1">
+        <ChartContainer config={chartConfig} className="aspect-auto h-full w-full">
           <BarChart
             accessibilityLayer
             data={isMonthly ? data.monthly.chartData : data.yearly.chartData}

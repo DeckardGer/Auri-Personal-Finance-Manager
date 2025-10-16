@@ -62,3 +62,8 @@ export type CategoryAmountChartData = {
     description: string;
   };
 };
+
+export type CardData = {
+  value: number;
+  percentage?: number;
+};

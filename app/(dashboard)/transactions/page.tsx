@@ -1,6 +1,6 @@
 import { columns } from '@/components/transactions/columns';
 import { DataTable } from '@/components/transactions/data-table';
-import InfoCardsSection from '@/components/transactions/info-cards-section';
+import InfoCardsSection from '@/components/transactions/InfoCardsSection';
 import { UploadTransactionsDialog } from '@/components/transactions/UploadTransactionsDialog';
 import { ExportButton } from '@/components/transactions/ExportButton';
 

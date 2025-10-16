@@ -35,7 +35,7 @@ export function BalanceChart({ chartData }: { chartData: Promise<BalanceChartDat
   const [isWeekly, setIsWeekly] = useState(true);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Balance Over Time</CardTitle>
         <CardDescription>
@@ -54,8 +54,8 @@ export function BalanceChart({ chartData }: { chartData: Promise<BalanceChartDat
           </Tooltip>
         </CardAction>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent className="flex-1">
+        <ChartContainer config={chartConfig} className="aspect-auto h-full w-full">
           <LineChart
             accessibilityLayer
             data={isWeekly ? data.weekly.chartData : data.monthly.chartData}

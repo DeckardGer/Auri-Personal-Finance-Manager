@@ -52,7 +52,7 @@ export function CategoryPercentageChart({
   };
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Category Expenses</CardTitle>
         <CardDescription>
