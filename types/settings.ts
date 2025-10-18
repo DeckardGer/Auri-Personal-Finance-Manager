@@ -12,6 +12,13 @@ export const settingsSchema = z.object({
   job: z.string().min(1, 'Job title is required'),
   country: countrySchema.optional(),
   apiKey: z.string().min(1, 'OpenAI API Key is required'),
+  pendingTransactionsBuffer: z.coerce
+    .number<number>()
+    .int()
+    .min(1, 'Pending Transactions Buffer is required'),
+  dateColumnOverride: z.number().int().optional(),
+  amountColumnOverride: z.number().int().optional(),
+  descriptionColumnOverride: z.number().int().optional(),
 });
 
 export type SettingsSchema = z.infer<typeof settingsSchema>;
