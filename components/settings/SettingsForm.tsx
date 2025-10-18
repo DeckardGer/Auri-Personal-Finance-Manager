@@ -8,6 +8,7 @@ import { useState } from 'react';
 import openai from '@/public/openai.svg';
 import { CountryDropdown } from '@/components/ui/country-dropdown';
 import { SettingsCard } from '@/components/settings/SettingsCard';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Button } from '@/components/ui/button';
 import { Field, FieldGroup, FieldDescription, FieldLabel, FieldError } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -20,7 +21,7 @@ import {
 import { updateSettings } from '@/actions/settings';
 import { settingsSchema, type SettingsSchema } from '@/types/settings';
 import { UserWithSettings } from '@/types/user';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Info } from 'lucide-react';
 
 export function SettingsForm({ user }: { user: UserWithSettings }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,9 +43,9 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
           : undefined,
       apiKey: user.apiKey,
       pendingTransactionsBuffer: user.settings?.pendingDaysBuffer || 14,
-      dateColumnOverride: user.settings?.dateColumnIndex ?? undefined,
-      amountColumnOverride: user.settings?.amountColumnIndex ?? undefined,
-      descriptionColumnOverride: user.settings?.descriptionColumnIndex ?? undefined,
+      dateColumnOverride: user.settings?.dateColumnIndex?.toString() ?? '',
+      amountColumnOverride: user.settings?.amountColumnIndex?.toString() ?? '',
+      descriptionColumnOverride: user.settings?.descriptionColumnIndex?.toString() ?? '',
     },
   });
 
@@ -88,7 +89,9 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="name">Name</FieldLabel>
-                  <FieldDescription>The name we will use to refer to you</FieldDescription>
+                  <FieldDescription className="truncate">
+                    The name we will use to refer to you
+                  </FieldDescription>
                   <Input
                     {...field}
                     id="name"
@@ -106,7 +109,9 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="job">Job Title</FieldLabel>
-                  <FieldDescription>Used for possible tax purposes</FieldDescription>
+                  <FieldDescription className="truncate">
+                    Used for possible tax purposes
+                  </FieldDescription>
                   <Input
                     {...field}
                     id="job"
@@ -129,7 +134,7 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="apiKey">OpenAI API Key</FieldLabel>
-                  <FieldDescription>
+                  <FieldDescription className="truncate">
                     For categorising transactions and generating insights
                   </FieldDescription>
                   <InputGroup>
@@ -178,7 +183,7 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="country">Country</FieldLabel>
-                  <FieldDescription>
+                  <FieldDescription className="truncate">
                     Used for transactions currency and possible tax purposes
                   </FieldDescription>
                   <CountryDropdown
@@ -194,7 +199,7 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
         </SettingsCard>
 
         <SettingsCard title="Transactions Upload">
-          <FieldGroup>
+          <FieldGroup className="grid grid-cols-2 grid-rows-2 gap-4">
             <Controller
               name="pendingTransactionsBuffer"
               control={form.control}
@@ -202,14 +207,131 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="pendingTransactionsBuffer">
                     Pending Transactions Buffer
+                    <HoverCard openDelay={100} closeDelay={100}>
+                      <HoverCardTrigger>
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">What is this?</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Banks often export all transactions associated with an account,
+                            including pending transactions (transactions that have not yet been
+                            confirmed by the bank).
+                            <br />
+                            Since these transactions can change over time, we need to buffer them
+                            for a few days to ensure we have the most up to date information.
+                            <br />
+                            This number is just how many days worth of transactions we look over to
+                            see if tranactions have changed.
+                            <br />
+                            <br />
+                            <span className="font-semibold text-foreground">TLDR: </span>
+                            Set this to 14 if you&apos;re unsure.
+                          </p>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
                   </FieldLabel>
-                  <FieldDescription>Days buffered for pending transactions</FieldDescription>
+                  <FieldDescription className="truncate">
+                    Days buffered for pending transactions
+                  </FieldDescription>
                   <Input
                     {...field}
                     id="pendingTransactionsBuffer"
                     type="number"
                     aria-invalid={fieldState.invalid}
                     placeholder="Default: 14"
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            <Controller
+              name="dateColumnOverride"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="dateColumnOverride">
+                    Date Column Override
+                    <HoverCard openDelay={100} closeDelay={100}>
+                      <HoverCardTrigger>
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        <p className="text-sm">Column&apos;s start at index 1</p>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FieldLabel>
+                  <FieldDescription className="truncate">
+                    CSV column number override
+                  </FieldDescription>
+                  <Input
+                    {...field}
+                    id="dateColumnOverride"
+                    type="number"
+                    aria-invalid={fieldState.invalid}
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            <Controller
+              name="amountColumnOverride"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="amountColumnOverride">
+                    Amount Column Override
+                    <HoverCard openDelay={100} closeDelay={100}>
+                      <HoverCardTrigger>
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        <p className="text-sm">Column&apos;s start at index 1</p>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FieldLabel>
+                  <FieldDescription className="truncate">
+                    CSV amount number override
+                  </FieldDescription>
+                  <Input
+                    {...field}
+                    id="amountColumnOverride"
+                    type="number"
+                    aria-invalid={fieldState.invalid}
+                    autoComplete="off"
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+            <Controller
+              name="descriptionColumnOverride"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="descriptionColumnOverride">
+                    Description Column Override
+                    <HoverCard openDelay={100} closeDelay={100}>
+                      <HoverCardTrigger>
+                        <Info className="h-4 w-4 text-muted-foreground" />
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        <p className="text-sm">Column&apos;s start at index 1</p>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </FieldLabel>
+                  <FieldDescription className="truncate">
+                    CSV description number override
+                  </FieldDescription>
+                  <Input
+                    {...field}
+                    id="descriptionColumnOverride"
+                    type="number"
+                    aria-invalid={fieldState.invalid}
                     autoComplete="off"
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

@@ -16,9 +16,51 @@ export const settingsSchema = z.object({
     .number<number>()
     .int()
     .min(1, 'Pending Transactions Buffer is required'),
-  dateColumnOverride: z.number().int().optional(),
-  amountColumnOverride: z.number().int().optional(),
-  descriptionColumnOverride: z.number().int().optional(),
+  dateColumnOverride: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value || isNaN(Number(value))) {
+          return true;
+        }
+        const parsedValue = parseInt(value, 10);
+        return Number.isInteger(parsedValue) && parsedValue >= 1;
+      },
+      {
+        message: 'Date column override should be a number greater than or equal to 1',
+      }
+    ),
+  amountColumnOverride: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value || isNaN(Number(value))) {
+          return true;
+        }
+        const parsedValue = parseInt(value, 10);
+        return Number.isInteger(parsedValue) && parsedValue >= 1;
+      },
+      {
+        message: 'Amount column override should be a number greater than or equal to 1',
+      }
+    ),
+  descriptionColumnOverride: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value || isNaN(Number(value))) {
+          return true;
+        }
+        const parsedValue = parseInt(value, 10);
+        return Number.isInteger(parsedValue) && parsedValue >= 1;
+      },
+      {
+        message: 'Description column override should be a number greater than or equal to 1',
+      }
+    ),
 });
 
 export type SettingsSchema = z.infer<typeof settingsSchema>;
