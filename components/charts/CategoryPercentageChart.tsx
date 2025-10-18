@@ -93,7 +93,7 @@ export function CategoryPercentageChart({
                 <ChartTooltipContent
                   hideLabel
                   valueFormatter={(value, payload) =>
-                    `${currencyFormatterMinimal.format(value as number)} - ${(payload as ExtendedPayload).percentage!.toFixed(1)}%`
+                    `${currencyFormatterMinimal.format(value as number)} (${(payload as ExtendedPayload).percentage!.toFixed(1)}%)`
                   }
                 />
               }

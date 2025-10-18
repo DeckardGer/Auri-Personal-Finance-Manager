@@ -1,4 +1,7 @@
 import React from 'react';
+import { Notifications } from './Notifications';
+import { ThemeToggle } from '@/components/dashboard/ThemeToggle';
+import { HoverPrefetchLink } from '@/components/ui/hover-prefetch-link';
 import { Button } from '@/components/ui/button';
 import {
   Breadcrumb,
@@ -13,11 +16,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { HoverPrefetchLink } from '@/components/ui/hover-prefetch-link';
-import { ThemeToggle } from '@/components/dashboard/ThemeToggle';
+
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { type LucideIcon, Bell } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 type HeaderProps = {
   breadcrumbs: { href: string; label: string; icon?: LucideIcon }[];
@@ -90,9 +92,7 @@ export function Header({ breadcrumbs }: HeaderProps) {
           </span>
         </Button>
         <Separator orientation="vertical" className="data-[orientation=vertical]:h-5" />
-        <Button variant="outline" size="icon">
-          <Bell />
-        </Button>
+        <Notifications />
         <ThemeToggle />
       </div>
     </header>
