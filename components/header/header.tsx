@@ -19,6 +19,7 @@ import {
 
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { getUser } from '@/lib/data';
 import type { LucideIcon } from 'lucide-react';
 
 type HeaderProps = {
@@ -26,7 +27,9 @@ type HeaderProps = {
 };
 
 // TODO: If converted to a client component in the future, add SidebarTrigger state shown when sidebar is collapsed
-export function Header({ breadcrumbs }: HeaderProps) {
+export async function Header({ breadcrumbs }: HeaderProps) {
+  const user = await getUser();
+
   return (
     <header className="flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -73,7 +76,7 @@ export function Header({ breadcrumbs }: HeaderProps) {
         </Breadcrumb>
       </div>
       <div className="flex items-center gap-2">
-        <AuriChat />
+        <AuriChat name={user?.name?.split(' ')[0] ?? 'User'} />
         <Separator orientation="vertical" className="data-[orientation=vertical]:h-5" />
         <Notifications />
         <ThemeToggle />

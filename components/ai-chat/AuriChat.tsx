@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/input-group';
 import { ArrowUpIcon } from 'lucide-react';
 
-export function AuriChat() {
+export function AuriChat({ name }: { name: string }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -41,7 +41,7 @@ export function AuriChat() {
         <div className="mt-20 flex flex-col items-center">
           <div className="ai-orb h-16 w-16" />
           <p className="mt-12 text-center text-lg font-semibold text-muted-foreground">
-            Hi Deckard,
+            Hi {name},
           </p>
           <h3 className="mt-1 text-center text-lg font-semibold">Welcome back! How can I help?</h3>
           <p className="mt-2 px-14 text-center text-sm text-muted-foreground">

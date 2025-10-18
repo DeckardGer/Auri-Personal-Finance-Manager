@@ -147,27 +147,6 @@ export default async function Dashboard() {
           </div>
         </div>
       </div>
-
-      {/* <div className="max-w-1/2">
-        <Suspense fallback={<div>Loading...</div>}>
-          <CategoryPercentageChart chartData={categoryAmountsData} />
-        </Suspense>
-      </div>
-      <div className="max-w-1/2">
-        <Suspense fallback={<div>Loading...</div>}>
-          <CashflowChart chartData={cashflowData} />
-        </Suspense>
-      </div>
-      <div className="max-w-1/2">
-        <Suspense fallback={<div>Loading...</div>}>
-          <BalanceChart chartData={balanceData} />
-        </Suspense>
-      </div>
-      <div className="max-w-1/3">
-        <Suspense fallback={<div>Loading...</div>}>
-          <RecentTransactions recentTransactionsData={recentTransactionsData} />
-        </Suspense>
-      </div> */}
     </div>
   );
 }
