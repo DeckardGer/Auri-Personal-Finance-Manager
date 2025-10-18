@@ -1,8 +1,8 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { createDefaultCategories } from '@/actions/categories';
 import { OnboardingSchema } from '@/types/onboarding-schemas';
-import { createDefaultCategories } from './categories';
+import { prisma } from '@/lib/prisma';
 
 export const completeOnboarding = async (userDetails: OnboardingSchema) => {
   try {

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const CountrySchema = z.object({
+const countrySchema = z.object({
   name: z.string(),
   alpha3: z.string(),
   currencies: z.array(z.string()),
@@ -9,7 +9,7 @@ const CountrySchema = z.object({
 export const onboardingStep1Schema = z.object({
   name: z.string().min(1, 'Name is required'),
   job: z.string().min(1, 'Job title is required'),
-  country: CountrySchema.optional(),
+  country: countrySchema.optional(),
 });
 
 export type OnboardingStep1Schema = z.infer<typeof onboardingStep1Schema>;

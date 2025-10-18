@@ -68,9 +68,9 @@ export function OnboardingStep2({
                         <Image
                           src={openai}
                           alt="OpenAI"
-                          width={20}
-                          height={20}
-                          className="h-5 w-5 dark:invert"
+                          width={16}
+                          height={16}
+                          className="h-4 w-4 dark:invert"
                           priority
                           unoptimized
                         />

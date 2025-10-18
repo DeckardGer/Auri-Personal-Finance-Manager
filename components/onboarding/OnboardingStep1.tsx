@@ -78,7 +78,7 @@ export function OnboardingStep1({
                   <FormItem>
                     <FormLabel>Job Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Software Engineer" {...field} />
+                      <Input placeholder="e.g. Software Engineer" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

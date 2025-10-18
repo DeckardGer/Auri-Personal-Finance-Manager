@@ -1,9 +1,6 @@
 'use server';
 
-import { openai, zodTextFormat } from '@/lib/openai';
 import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
-import { jaroWinkler, preprocessText } from '@/lib/stringComparison';
 import type {
   SimpleTransaction,
   CSVTransaction,
@@ -12,6 +9,9 @@ import type {
   TempUnmatchedTransaction,
   UploadTransaction,
 } from '@/types/transactions';
+import { jaroWinkler, preprocessText } from '@/lib/stringComparison';
+import { openai, zodTextFormat } from '@/lib/openai';
+import { prisma } from '@/lib/prisma';
 
 type TransactionTempId = CSVTransaction & {
   tempId: number;
