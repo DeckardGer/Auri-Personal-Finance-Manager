@@ -59,9 +59,9 @@
   --radius: 0.625rem;
   --background: oklch(1 0 0); /* Main background colour */
   --foreground: var(--grey-900); /* Main text colour */
-  --card: var(--grey-25); /* Card background colour */
+  --card: var(--grey-50); /* Card background colour */
   --card-foreground: var(--grey-900); /* Card text colour */
-  --popover: var(--grey-25); /* Popover background colour */
+  --popover: var(--grey-50); /* Popover background colour */
   --popover-foreground: var(--grey-900); /* Popover text colour */
   --primary: oklch(0.5645 0.1916 293.78); /* Brand colour */
   --primary-foreground: oklch(1 0 0); /* Brand text colour */
