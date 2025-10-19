@@ -9,6 +9,16 @@ import openai from '@/public/openai.svg';
 import { CountryDropdown } from '@/components/ui/country-dropdown';
 import { SettingsCard } from '@/components/settings/SettingsCard';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { Button } from '@/components/ui/button';
 import { Field, FieldGroup, FieldDescription, FieldLabel, FieldError } from '@/components/ui/field';
 import { Separator } from '@/components/ui/separator';
@@ -20,12 +30,29 @@ import {
   InputGroupButton,
 } from '@/components/ui/input-group';
 import { updateSettings } from '@/actions/settings';
+import { cn } from '@/lib/utils';
 import { settingsSchema, type SettingsSchema } from '@/types/settings';
 import { UserWithSettings } from '@/types/user';
-import { Eye, EyeOff, Info } from 'lucide-react';
+import { Merchant } from '@/types/merchants';
+import { Eye, EyeOff, Info, Check, X } from 'lucide-react';
 
-export function SettingsForm({ user }: { user: UserWithSettings }) {
+type SettingsFormProps = {
+  user: UserWithSettings;
+  merchants: Merchant[];
+};
+
+export function SettingsForm({ user, merchants }: SettingsFormProps) {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [selectedValues, setSelectedValues] = useState<Map<number, string>>(
+    () =>
+      new Map(
+        user.settings?.ignoredMerchants.map((ignoredMerchant) => [
+          ignoredMerchant.merchantId,
+          merchants.find((merchant) => merchant.id === ignoredMerchant.merchantId)?.name ?? '',
+        ]) ?? []
+      )
+  );
 
   const form = useForm<SettingsSchema>({
     resolver: zodResolver(settingsSchema),
@@ -47,6 +74,8 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
       dateColumnOverride: user.settings?.dateColumnIndex?.toString() ?? '',
       amountColumnOverride: user.settings?.amountColumnIndex?.toString() ?? '',
       descriptionColumnOverride: user.settings?.descriptionColumnIndex?.toString() ?? '',
+      ignoredMerchants:
+        user.settings?.ignoredMerchants.map((merchant) => merchant.merchantId) ?? [],
     },
   });
 
@@ -371,6 +400,124 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
+            />
+          </FieldGroup>
+        </SettingsCard>
+
+        <SettingsCard title="Personal Transfers">
+          <FieldGroup>
+            <Controller
+              name="ignoredMerchants"
+              control={form.control}
+              render={({ field, fieldState }) => {
+                const selected = selectedValues;
+                const toggle = (id: number) => {
+                  const newMap = new Map(selected);
+                  if (newMap.has(id)) {
+                    newMap.delete(id);
+                  } else {
+                    newMap.set(id, merchants.find((merchant) => merchant.id === id)?.name ?? '');
+                  }
+                  setSelectedValues(newMap);
+                  field.onChange(Array.from(newMap.keys()));
+                };
+
+                return (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="ignoredMerchants">
+                      Ignored Merchants
+                      <HoverCard openDelay={100} closeDelay={100}>
+                        <HoverCardTrigger>
+                          <Info className="h-4 w-4 text-muted-foreground" />
+                        </HoverCardTrigger>
+                        <HoverCardContent>
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-semibold">What is this?</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Any transactions (income or expense) from these merchants will be
+                              ignored in most graphs.
+                              <br />
+                              <br />
+                              This is intended for transactions related to transferring between your
+                              own accounts, or investment purposes, where transfers are not real
+                              transactions.
+                            </p>
+                          </div>
+                        </HoverCardContent>
+                      </HoverCard>
+                    </FieldLabel>
+                    <FieldDescription className="truncate">
+                      Select merchants whose transactions will be ignored
+                    </FieldDescription>
+
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline">Add / Remove Merchants</Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[var(--radix-popper-anchor-width)] p-0"
+                        align="start"
+                      >
+                        <Command>
+                          <CommandInput placeholder="Search merchants..." />
+                          <CommandList>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandGroup>
+                              {merchants.map((merchant) => {
+                                const isSelected = selected.has(merchant.id);
+                                return (
+                                  <CommandItem
+                                    key={merchant.id}
+                                    onSelect={() => toggle(merchant.id)}
+                                  >
+                                    <div
+                                      className={cn(
+                                        'mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary',
+                                        isSelected
+                                          ? 'bg-primary text-primary-foreground'
+                                          : 'opacity-50 [&_svg]:invisible'
+                                      )}
+                                    >
+                                      <Check />
+                                    </div>
+                                    <span>{merchant.name}</span>
+                                  </CommandItem>
+                                );
+                              })}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+
+                    {Array.from(selectedValues.entries()).map(([merchantId, merchantName]) => (
+                      <Item key={merchantId} variant="outline" className="p-3">
+                        <ItemContent>
+                          <ItemTitle>{merchantName}</ItemTitle>
+                        </ItemContent>
+                        <ItemActions>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="size-7"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              const newMap = new Map(selectedValues);
+                              newMap.delete(merchantId);
+                              setSelectedValues(newMap);
+                              field.onChange(Array.from(newMap.keys()));
+                            }}
+                          >
+                            <X className="size-3" />
+                          </Button>
+                        </ItemActions>
+                      </Item>
+                    ))}
+
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                );
+              }}
             />
           </FieldGroup>
         </SettingsCard>

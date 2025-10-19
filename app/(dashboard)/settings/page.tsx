@@ -17,14 +17,26 @@ export default async function Settings() {
           dateColumnIndex: true,
           amountColumnIndex: true,
           descriptionColumnIndex: true,
+          ignoredMerchants: {
+            select: {
+              merchantId: true,
+            },
+          },
         },
       },
     },
   });
 
+  const merchants = await prisma.merchant.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
   return (
     <div className="mx-auto h-full max-w-2xl">
-      {userSettings && <SettingsForm user={userSettings} />}
+      {userSettings && <SettingsForm user={userSettings} merchants={merchants} />}
     </div>
   );
 }

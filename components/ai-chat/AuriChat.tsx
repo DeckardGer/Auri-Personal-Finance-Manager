@@ -59,7 +59,7 @@ export function AuriChat({ name }: { name: string }) {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-2">
             <QuickPrompt prompt="Spending breakdown" icon={ListCheck} iconColour="#099250" />
-            <QuickPrompt prompt="Budgetting" icon={Goal} iconColour="#1570EF" />
+            <QuickPrompt prompt="Budgeting" icon={Goal} iconColour="#1570EF" />
             <QuickPrompt prompt="Networth" icon={Sprout} iconColour="#6938EF" />
             <QuickPrompt prompt="Summarise month" icon={NotebookPen} iconColour="#DD2590" />
             <QuickPrompt prompt="Income vs expenses" icon={TrendingUpDown} iconColour="#E04F16" />

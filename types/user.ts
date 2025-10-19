@@ -11,5 +11,8 @@ export type UserWithSettings = {
     dateColumnIndex: number | null;
     amountColumnIndex: number | null;
     descriptionColumnIndex: number | null;
+    ignoredMerchants: {
+      merchantId: number;
+    }[];
   } | null;
 };

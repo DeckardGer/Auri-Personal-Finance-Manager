@@ -19,13 +19,23 @@ model User {
 }
 
 model UserSettings {
-  id                     Int  @id @default(autoincrement())
-  userId                 Int  @unique
-  pendingDaysBuffer      Int  @default(14)
+  id                     Int               @id @default(autoincrement())
+  userId                 Int               @unique
+  pendingDaysBuffer      Int               @default(14)
   dateColumnIndex        Int?
   amountColumnIndex      Int?
   descriptionColumnIndex Int?
-  user                   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ignoredMerchants       IgnoredMerchant[]
+}
+
+model IgnoredMerchant {
+  id             Int          @id @default(autoincrement())
+  userSettingsId Int
+  merchantId     Int
+  userSettings   UserSettings @relation(fields: [userSettingsId], references: [id], onDelete: Cascade)
+
+  @@unique([userSettingsId, merchantId])
 }
 
 model Merchant {

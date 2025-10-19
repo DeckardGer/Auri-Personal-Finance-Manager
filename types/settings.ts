@@ -61,6 +61,7 @@ export const settingsSchema = z.object({
         message: 'Description column override should be a number greater than or equal to 1',
       }
     ),
+  ignoredMerchants: z.array(z.number().int()),
 });
 
 export type SettingsSchema = z.infer<typeof settingsSchema>;
