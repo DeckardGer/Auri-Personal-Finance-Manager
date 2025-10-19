@@ -11,6 +11,7 @@ import { SettingsCard } from '@/components/settings/SettingsCard';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Button } from '@/components/ui/button';
 import { Field, FieldGroup, FieldDescription, FieldLabel, FieldError } from '@/components/ui/field';
+import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import {
   InputGroup,
@@ -260,7 +261,18 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
                         <Info className="h-4 w-4 text-muted-foreground" />
                       </HoverCardTrigger>
                       <HoverCardContent>
-                        <p className="text-sm">Column&apos;s start at index 1</p>
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">What is this?</h4>
+                          <p className="text-sm text-muted-foreground">
+                            The system automatically looks for the column with the header
+                            &quot;Date&quot;. If this is not what the column is called, you can
+                            override it here.
+                          </p>
+                          <Separator />
+                          <p className="text-sm text-muted-foreground">
+                            Column numbers start at 1.
+                          </p>
+                        </div>
                       </HoverCardContent>
                     </HoverCard>
                   </FieldLabel>
@@ -290,7 +302,18 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
                         <Info className="h-4 w-4 text-muted-foreground" />
                       </HoverCardTrigger>
                       <HoverCardContent>
-                        <p className="text-sm">Column&apos;s start at index 1</p>
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">What is this?</h4>
+                          <p className="text-sm text-muted-foreground">
+                            The system automatically looks for the column with the header
+                            &quot;Amount&quot;. If this is not what the column is called, you can
+                            override it here.
+                          </p>
+                          <Separator />
+                          <p className="text-sm text-muted-foreground">
+                            Column numbers start at 1.
+                          </p>
+                        </div>
                       </HoverCardContent>
                     </HoverCard>
                   </FieldLabel>
@@ -320,7 +343,18 @@ export function SettingsForm({ user }: { user: UserWithSettings }) {
                         <Info className="h-4 w-4 text-muted-foreground" />
                       </HoverCardTrigger>
                       <HoverCardContent>
-                        <p className="text-sm">Column&apos;s start at index 1</p>
+                        <div className="space-y-2">
+                          <h4 className="text-sm font-semibold">What is this?</h4>
+                          <p className="text-sm text-muted-foreground">
+                            The system automatically looks for the column with the header
+                            &quot;Description&quot;. If this is not what the column is called, you
+                            can override it here.
+                          </p>
+                          <Separator />
+                          <p className="text-sm text-muted-foreground">
+                            Column numbers start at 1.
+                          </p>
+                        </div>
                       </HoverCardContent>
                     </HoverCard>
                   </FieldLabel>

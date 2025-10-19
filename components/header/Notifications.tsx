@@ -37,7 +37,7 @@ export function Notifications() {
               </EmptyMedia>
               <EmptyTitle className="text-md">You&apos;re all caught up</EmptyTitle>
               <EmptyDescription className="text-sm">
-                We&apos;ve notify you of all the latest updates.
+                We&apos;ll notify you of all the latest updates.
               </EmptyDescription>
             </EmptyHeader>
           </Empty>

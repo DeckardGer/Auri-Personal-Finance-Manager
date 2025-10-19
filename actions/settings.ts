@@ -22,15 +22,17 @@ export const updateSettings = async (settings: SettingsSchema) => {
         data: {
           pendingDaysBuffer: settings.pendingTransactionsBuffer,
           dateColumnIndex:
-            Number(settings.dateColumnOverride) === 0 ? null : Number(settings.dateColumnOverride),
+            Number(settings.dateColumnOverride) === 0
+              ? null
+              : Number(settings.dateColumnOverride) - 1,
           amountColumnIndex:
             Number(settings.amountColumnOverride) === 0
               ? null
-              : Number(settings.amountColumnOverride),
+              : Number(settings.amountColumnOverride) - 1,
           descriptionColumnIndex:
             Number(settings.descriptionColumnOverride) === 0
               ? null
-              : Number(settings.descriptionColumnOverride),
+              : Number(settings.descriptionColumnOverride) - 1,
         },
       }),
     ]);

@@ -9,7 +9,16 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from '@/components/ui/input-group';
-import { ArrowUpIcon } from 'lucide-react';
+import {
+  ArrowUpIcon,
+  ListCheck,
+  NotebookPen,
+  TrendingUpDown,
+  Goal,
+  Sprout,
+  Sparkles,
+  type LucideIcon,
+} from 'lucide-react';
 
 export function AuriChat({ name }: { name: string }) {
   return (
@@ -38,7 +47,7 @@ export function AuriChat({ name }: { name: string }) {
         <VisuallyHidden>
           <SheetTitle>Auri Chat</SheetTitle>
         </VisuallyHidden>
-        <div className="mt-20 flex flex-col items-center">
+        <div className="mt-16 flex flex-col items-center">
           <div className="ai-orb h-16 w-16" />
           <p className="mt-12 text-center text-lg font-semibold text-muted-foreground">
             Hi {name},
@@ -48,6 +57,14 @@ export function AuriChat({ name }: { name: string }) {
             I&apos;m here to help you with your finances. <br />
             Choose from the prompts below or just tell me what you need!
           </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-2">
+            <QuickPrompt prompt="Spending breakdown" icon={ListCheck} iconColour="#099250" />
+            <QuickPrompt prompt="Budgetting" icon={Goal} iconColour="#1570EF" />
+            <QuickPrompt prompt="Networth" icon={Sprout} iconColour="#6938EF" />
+            <QuickPrompt prompt="Summarise month" icon={NotebookPen} iconColour="#DD2590" />
+            <QuickPrompt prompt="Income vs expenses" icon={TrendingUpDown} iconColour="#E04F16" />
+            <QuickPrompt prompt="More" icon={Sparkles} iconColour="#525252" />
+          </div>
         </div>
         <SheetFooter>
           <InputGroup>
@@ -70,5 +87,20 @@ export function AuriChat({ name }: { name: string }) {
         </SheetFooter>
       </SheetContent>
     </Sheet>
+  );
+}
+
+type QuickPromptProps = {
+  prompt: string;
+  icon: LucideIcon;
+  iconColour: string;
+};
+
+function QuickPrompt(promptDetails: QuickPromptProps) {
+  return (
+    <Button variant="outline" className="text-xs" size="sm">
+      <promptDetails.icon color={promptDetails.iconColour} />
+      {promptDetails.prompt}
+    </Button>
   );
 }
