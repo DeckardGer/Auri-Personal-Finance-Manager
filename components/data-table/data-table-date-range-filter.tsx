@@ -1,41 +1,32 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Column } from "@tanstack/react-table"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { DateRange } from "react-day-picker"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
+import * as React from 'react';
+import { Column } from '@tanstack/react-table';
+import { DateRange } from 'react-day-picker';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { CalendarIcon } from 'lucide-react';
 
 interface DataTableDateRangeFilterProps<TData, TValue> {
-  column?: Column<TData, TValue>
-  title?: string
+  column?: Column<TData, TValue>;
+  title?: string;
 }
 
 export function DataTableDateRangeFilter<TData, TValue>({
   column,
-  title = "Date Range",
+  title = 'Date Range',
 }: DataTableDateRangeFilterProps<TData, TValue>) {
-  const filterValue = column?.getFilterValue() as DateRange | undefined
-  const [date, setDate] = React.useState<DateRange | undefined>(filterValue)
+  const filterValue = column?.getFilterValue() as DateRange | undefined;
 
-  const handleSelect = (newDate: DateRange | undefined) => {
-    setDate(newDate)
-    column?.setFilterValue(newDate)
-  }
+  // const handleClear = () => {
+  //   setDate(undefined);
+  //   column?.setFilterValue(undefined);
+  // };
 
-  const handleClear = () => {
-    setDate(undefined)
-    column?.setFilterValue(undefined)
-  }
-
-  const hasDateRange = date?.from || date?.to
+  const hasDateRange = filterValue?.from || filterValue?.to;
 
   return (
     <Popover>
@@ -47,42 +38,50 @@ export function DataTableDateRangeFilter<TData, TValue>({
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
               <Badge variant="secondary" className="rounded-sm px-1 font-normal lg:hidden">
-                {date?.from && date?.to ? 2 : 1}
+                {filterValue?.from &&
+                  filterValue?.to &&
+                  `${Math.round((filterValue.to.getTime() - filterValue.from.getTime()) / (24 * 60 * 60 * 1000))} ${
+                    Math.round(
+                      (filterValue.to.getTime() - filterValue.from.getTime()) /
+                        (24 * 60 * 60 * 1000)
+                    ) === 1
+                      ? 'day'
+                      : 'days'
+                  }`}
               </Badge>
               <div className="hidden space-x-1 lg:flex">
                 <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                  {date?.from && format(date.from, "MMM d, yyyy")}
-                  {date?.from && date?.to && " - "}
-                  {date?.to && format(date.to, "MMM d, yyyy")}
+                  {filterValue?.from && filterValue?.from.toLocaleDateString()}
+                  {filterValue?.from && filterValue?.to && ' - '}
+                  {filterValue?.to && filterValue?.to.toLocaleDateString()}
                 </Badge>
               </div>
             </>
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <div className="p-3">
-          <Calendar
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={handleSelect}
-            numberOfMonths={2}
-            initialFocus
-          />
-          {hasDateRange && (
-            <div className="border-t pt-3">
+      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+        <Calendar
+          mode="range"
+          selected={filterValue}
+          captionLayout="dropdown"
+          onSelect={column?.setFilterValue}
+        />
+        {hasDateRange && (
+          <>
+            <Separator />
+            <div className="m-1">
               <Button
                 variant="ghost"
-                className="w-full justify-center"
-                onClick={handleClear}
+                className="h-8 w-full"
+                onClick={() => column?.setFilterValue(undefined)}
               >
-                Clear filter
+                Clear filters
               </Button>
             </div>
-          )}
-        </div>
+          </>
+        )}
       </PopoverContent>
     </Popover>
-  )
+  );
 }

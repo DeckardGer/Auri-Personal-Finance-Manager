@@ -40,10 +40,7 @@ export function DataTableToolbar<TData>({
           />
         )}
         {table.getColumn('date') && (
-          <DataTableDateRangeFilter
-            column={table.getColumn('date')}
-            title="Date Range"
-          />
+          <DataTableDateRangeFilter column={table.getColumn('date')} title="Date" />
         )}
         {isFiltered && (
           <Button
