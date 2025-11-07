@@ -9,6 +9,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { DateRange } from 'react-day-picker';
 import {
   Table,
   TableBody,
@@ -106,6 +107,7 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
 
         const merchantFilter = columnFilters.find((f) => f.id === 'merchant')?.value as string[];
         const categoryFilter = columnFilters.find((f) => f.id === 'category')?.value as string[];
+        const dateFilter = columnFilters.find((f) => f.id === 'date')?.value as DateRange | undefined;
 
         const params = new URLSearchParams({
           pageIndex: pagination.pageIndex.toString(),
@@ -120,6 +122,14 @@ export function DataTable<TData, TValue>({ columns }: DataTableProps<TData, TVal
 
         if (categoryFilter && categoryFilter.length > 0) {
           params.append('categoryId', categoryFilter.join(','));
+        }
+
+        if (dateFilter?.from) {
+          params.append('dateFrom', dateFilter.from.toISOString());
+        }
+
+        if (dateFilter?.to) {
+          params.append('dateTo', dateFilter.to.toISOString());
         }
 
         const res = await fetch(`/api/transactions?${params}`);

@@ -14,10 +14,13 @@ export async function GET(req: Request) {
 
   const merchantIdsParam = searchParams.get('merchantId');
   const categoryIdsParam = searchParams.get('categoryId');
+  const dateFromParam = searchParams.get('dateFrom');
+  const dateToParam = searchParams.get('dateTo');
 
   const where: {
     merchant?: { id: { in: number[] } };
     category?: { id: { in: number[] } };
+    date?: { gte?: Date; lte?: Date };
   } = {};
 
   if (merchantIdsParam) {
@@ -28,6 +31,19 @@ export async function GET(req: Request) {
   if (categoryIdsParam) {
     const categoryIds = categoryIdsParam.split(',').map((id) => Number(id.trim()));
     where.category = { id: { in: categoryIds } };
+  }
+
+  if (dateFromParam || dateToParam) {
+    where.date = {};
+    if (dateFromParam) {
+      where.date.gte = new Date(dateFromParam);
+    }
+    if (dateToParam) {
+      // Set to end of day for the 'to' date
+      const dateTo = new Date(dateToParam);
+      dateTo.setHours(23, 59, 59, 999);
+      where.date.lte = dateTo;
+    }
   }
 
   const [data, total]: [Transaction[], number] = await Promise.all([

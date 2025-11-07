@@ -3,6 +3,7 @@
 import { Table } from '@tanstack/react-table';
 import { DataTableViewOptions } from '@/components/data-table/data-table-view-options';
 import { DataTableFacetedFilter } from '@/components/data-table/data-table-faceted-filter';
+import { DataTableDateRangeFilter } from '@/components/data-table/data-table-date-range-filter';
 import { Button } from '@/components/ui/button';
 import { Merchant } from '@/types/merchants';
 import { Category } from '@/types/categories';
@@ -37,6 +38,9 @@ export function DataTableToolbar<TData>({
             title="Category"
             options={categories.map((c) => ({ value: c.id.toString(), label: c.name }))}
           />
+        )}
+        {table.getColumn('date') && (
+          <DataTableDateRangeFilter column={table.getColumn('date')} title="Date" />
         )}
         {isFiltered && (
           <Button
