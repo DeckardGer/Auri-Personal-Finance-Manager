@@ -10,6 +10,16 @@ export async function GET() {
   const twoMonthsAgo = new Date(currentDate);
   twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
 
+  // Get ignored merchant IDs in a single query
+  const userSettings = await prisma.userSettings.findFirst({
+    include: {
+      ignoredMerchants: {
+        select: { merchantId: true },
+      },
+    },
+  });
+  const ignoredMerchantIds = userSettings?.ignoredMerchants.map((im) => im.merchantId) || [];
+
   const expensesCurrentPeriod = await prisma.transaction.aggregate({
     where: {
       date: {
@@ -18,6 +28,9 @@ export async function GET() {
       },
       amount: {
         lt: 0,
+      },
+      merchantId: {
+        notIn: ignoredMerchantIds.length > 0 ? ignoredMerchantIds : undefined,
       },
     },
     _sum: {
@@ -30,6 +43,9 @@ export async function GET() {
       date: {
         gte: twoMonthsAgo,
         lte: oneMonthAgo,
+      },
+      merchantId: {
+        notIn: ignoredMerchantIds.length > 0 ? ignoredMerchantIds : undefined,
       },
     },
     _sum: {

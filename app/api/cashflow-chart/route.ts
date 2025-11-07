@@ -9,12 +9,25 @@ async function getMonthlyCashflowData() {
   const oneYearAgo = new Date(currentDate.getFullYear() - 1, currentDate.getMonth() + 1, 1);
   oneYearAgo.setHours(0, 0, 0, 0);
 
+  // Get ignored merchant IDs in a single query
+  const userSettings = await prisma.userSettings.findFirst({
+    include: {
+      ignoredMerchants: {
+        select: { merchantId: true },
+      },
+    },
+  });
+  const ignoredMerchantIds = userSettings?.ignoredMerchants.map((im) => im.merchantId) || [];
+
   // Fetch all transactions from the last year
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
         gte: oneYearAgo,
         lte: currentDate,
+      },
+      merchantId: {
+        notIn: ignoredMerchantIds.length > 0 ? ignoredMerchantIds : undefined,
       },
     },
     select: {
@@ -86,12 +99,25 @@ async function getYearlyCashflowData() {
   const tenYearsAgo = new Date(currentDate.getFullYear() - 9, 0, 1); // January 1st of 10 years ago
   tenYearsAgo.setHours(0, 0, 0, 0);
 
+  // Get ignored merchant IDs in a single query
+  const userSettings = await prisma.userSettings.findFirst({
+    include: {
+      ignoredMerchants: {
+        select: { merchantId: true },
+      },
+    },
+  });
+  const ignoredMerchantIds = userSettings?.ignoredMerchants.map((im) => im.merchantId) || [];
+
   // Fetch all transactions from the last 10 years
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
         gte: tenYearsAgo,
         lte: currentDate,
+      },
+      merchantId: {
+        notIn: ignoredMerchantIds.length > 0 ? ignoredMerchantIds : undefined,
       },
     },
     select: {

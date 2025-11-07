@@ -10,6 +10,16 @@ async function getYearCategoryPercentages() {
     currentDate.getDate()
   );
 
+  // Get ignored merchant IDs in a single query
+  const userSettings = await prisma.userSettings.findFirst({
+    include: {
+      ignoredMerchants: {
+        select: { merchantId: true },
+      },
+    },
+  });
+  const ignoredMerchantIds = userSettings?.ignoredMerchants.map((im) => im.merchantId) || [];
+
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
@@ -17,6 +27,9 @@ async function getYearCategoryPercentages() {
       },
       amount: {
         lt: 0,
+      },
+      merchantId: {
+        notIn: ignoredMerchantIds.length > 0 ? ignoredMerchantIds : undefined,
       },
     },
     select: {
@@ -71,6 +84,16 @@ async function getDecadeCategoryPercentages() {
   const currentDate = new Date();
   const oneDecadeAgo = new Date(currentDate.getFullYear() - 10);
 
+  // Get ignored merchant IDs in a single query
+  const userSettings = await prisma.userSettings.findFirst({
+    include: {
+      ignoredMerchants: {
+        select: { merchantId: true },
+      },
+    },
+  });
+  const ignoredMerchantIds = userSettings?.ignoredMerchants.map((im) => im.merchantId) || [];
+
   const transactions = await prisma.transaction.findMany({
     where: {
       date: {
@@ -78,6 +101,9 @@ async function getDecadeCategoryPercentages() {
       },
       amount: {
         lt: 0,
+      },
+      merchantId: {
+        notIn: ignoredMerchantIds.length > 0 ? ignoredMerchantIds : undefined,
       },
     },
     select: {
